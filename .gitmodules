@@ -1,0 +1,6 @@
+[submodule "moomanow-core"]
+	path = moomanow-core
+	url = https://github.com/moomanow/moomanow-core.git
+[submodule "moomanow/moomanow-core"]
+	path = moomanow/moomanow-core
+	url = https://github.com/moomanow/moomanow-core.git
