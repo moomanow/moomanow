@@ -3,19 +3,26 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.moomanow</groupId>
 	<artifactId>moomanow</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>pom</packaging>
 	<scm>
-  	<developerConnection>scm:git:git@github.com:moomanow/moomanow.git</developerConnection>
-  	<connection>scm:git:https://github.com/moomanow/moomanow.git</connection>
-  	<url>https://github.com/moomanow/moomanow.git</url>
-  	<tag>HEAD</tag>
-  </scm>
-  	<properties>
+		<developerConnection>scm:git:git@github.com:moomanow/moomanow.git</developerConnection>
+		<connection>scm:git:https://github.com/moomanow/moomanow.git</connection>
+		<url>https://github.com/moomanow/moomanow.git</url>
+		<tag>HEAD</tag>
+	</scm>
+	<properties>
 		<java-version>1.7</java-version>
 		<org.slf4j-version>1.7.12</org.slf4j-version>
 	</properties>
-  <build>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -140,8 +147,8 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-		<dependencyManagement>
+
+	<dependencyManagement>
 		<dependencies>
 			<!-- Spring -->
 			<dependency>
@@ -177,7 +184,7 @@
 				<artifactId>spring-security-oauth2</artifactId>
 				<version>2.0.3.RELEASE</version>
 			</dependency>
-			
+
 			<!-- Servlet -->
 			<dependency>
 				<groupId>javax.servlet</groupId>
@@ -366,9 +373,9 @@
 				<version>4.3</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.bouncycastle</groupId>
-			    <artifactId>bcprov-jdk15on</artifactId>
-			    <version>[1.52,]</version>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk15on</artifactId>
+				<version>[1.52,]</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
@@ -382,8 +389,8 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
-		<dependencies>
+
+	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -430,12 +437,12 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 		</dependency>
-		</dependencies>
-	
-	
-	
-	
-		<profiles>
+	</dependencies>
+
+
+
+
+	<profiles>
 		<profile>
 			<!-- Turn off strict javadoc when building on 1.8 -->
 			<activation>
@@ -459,9 +466,15 @@
 		</profile>
 	</profiles>
 
-		<modules>
-			<module>moomanow-core</module>
-			<module>moomanow-struts2-core</module>
-			<module>moomanow-process</module>
-		</modules>
+	<modules>
+		<module>moomanow-core</module>
+		<module>moomanow-struts2-core</module>
+		<module>moomanow-process</module>
+	</modules>
+	<url>https://github.com/moomanow/</url>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>9</version>
+	</parent>
 </project>
