@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.moomanow</groupId>
 	<artifactId>moomanow</artifactId>
-	<version>1.2.7-SNAPSHOT</version>
-	<name>MITREid Connect</name>
+	<version>0.0.1</version>
+	<name>moomanow</name>
 	<packaging>pom</packaging>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -508,5 +508,13 @@
 			</build>
 		</profile>
 	</profiles>
+
+
+<distributionManagement>
+  <snapshotRepository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+</distributionManagement>
 
 </project>
