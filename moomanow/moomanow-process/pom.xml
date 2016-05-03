@@ -5,6 +5,7 @@
 		<groupId>com.moomanow</groupId>
 		<artifactId>moomanow</artifactId>
 		<version>0.0.1</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>moomanow-process</artifactId>
 	<dependencies>
