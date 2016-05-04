@@ -8,7 +8,42 @@
   <artifactId>moomanow-struts2-jquery</artifactId>
   <build>
 		<plugins>
+		
+		
 			<plugin>
+                <groupId>org.apache.myfaces.tobago</groupId>
+                <artifactId>maven-apt-plugin</artifactId>
+                <version>1.0.39</version>
+                <configuration>
+                    <A>
+                        uri=/moomanow-struts2-jquery-tags,
+                        tlibVersion=${tlib.version},
+                        jspVersion=2.0,
+                        shortName=mj,
+                        displayName="Moomanow Struts2 jQuery Tags",
+                        outFile=${basedir}/target/classes/META-INF/moomanow-struts2-jquery-tags.tld,
+                        outTemplatesDir=${basedir}/src/site/docs
+                    </A>
+                    <resourceTargetPath>target</resourceTargetPath>
+                    <fork>false</fork>
+                    <force>true</force>
+                    <nocompile>true</nocompile>
+                    <showWarnings>true</showWarnings>
+                    <factory>
+                        org.apache.struts.annotations.taglib.apt.TLDAnnotationProcessorFactory
+                    </factory>
+                    <target>1.8</target>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                <execution>
+                	<phase>compile</phase>
+                </execution>
+                </executions>
+            </plugin>
+            <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -47,4 +82,43 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	    <dependencies>
+
+        <!-- Core -->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts-annotations</artifactId>
+            <version>1.0.4</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- JSP API -->
+
+        <!-- struts-annotations must be in compile scope for maven-apt-plugin to
+             function correctly. Marking it optional to exclude it from transitive dependency resolution -->
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-core</artifactId>
+            <version>${struts2.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.5</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+	    <properties>
+	    	<struts2.version>2.3.28.1</struts2.version>
+	    </properties>
 </project>
