@@ -25,6 +25,8 @@
 		<module>moomanow-core</module>
 		<module>moomanow-struts2-core</module>
 		<module>moomanow-process</module>
+		<module>moomanow-struts2-jquery</module>
+		<module>moomanow-struts2-ui</module>
 	</modules>
 
 	<scm>
@@ -152,6 +154,14 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
