@@ -3,6 +3,8 @@
  */
 package com.moomanow.core.common.constant;
 
+import java.util.Locale;
+
 /**
  * @author Jaurpong.w(Kwan)
  *
@@ -11,6 +13,7 @@ public interface CommonConstant {
 
 	public static final String PROCESS_STATUS_SUCCESS = "S";
     public static final String PROCESS_STATUS_FAIL = "F";
+    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     
     public static interface SESSION {
     	

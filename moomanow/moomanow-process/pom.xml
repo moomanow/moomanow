@@ -24,6 +24,11 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>com.moomanow</groupId>
+			<artifactId>moomanow-core</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	</dependencies>
 	
 	  <build>

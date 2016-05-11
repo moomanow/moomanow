@@ -15,7 +15,7 @@ import org.aspectj.lang.annotation.Aspect;
 public class ProcessHandler {
 	
 	private static final Logger logger = Logger.getLogger(ProcessHandler.class);
-	private static final Logger logger2 = Logger.getLogger("org.kanomchan.core.common.processhandler.ProcessHandler.error.view.level");
+	private static final Logger logger2 = Logger.getLogger("com.moomanow.core.common.processhandler.ProcessHandler.error.view.level");
 
 	
 	public Object doAspect(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {

@@ -2,12 +2,14 @@ package com.moomanow.core.common.bean;
 
 import java.io.Serializable;
 
+import com.moomanow.core.common.constant.MessageCode;
+
 public interface Message extends Serializable {
 
 	
 	public String getMessageCode();
 	public void setMessageCode(String messageCode);
-	public void setMessageCode(com.moomanow.core.common.constant.MessageCode messageCode);
+	public void setMessageCode(MessageCode messageCode);
 	public void setPara(String...para);
 	public String[] getPara();
 	public String getMessageLang();

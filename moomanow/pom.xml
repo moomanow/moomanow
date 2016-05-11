@@ -27,6 +27,7 @@
 		<module>moomanow-process</module>
 		<module>moomanow-struts2-jquery</module>
 		<module>moomanow-struts2-ui</module>
+		<module>moomanow-dao</module>
 	</modules>
 
 	<scm>

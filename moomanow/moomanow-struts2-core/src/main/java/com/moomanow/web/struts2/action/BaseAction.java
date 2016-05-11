@@ -4,6 +4,7 @@
 package com.moomanow.web.struts2.action;
 
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,8 @@ import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.BeanNameAware;
 
+import com.moomanow.web.struts2.bean.Button;
+import com.moomanow.web.struts2.bean.MessageAction;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.interceptor.ValidationWorkflowAware;
@@ -33,6 +36,10 @@ public abstract class BaseAction extends ActionSupport implements RequestAware,S
 	protected HttpServletResponse httpServletResponse;
 	protected Map<String, Object> session;
 	protected Map<String, Object> request;
+	protected List<MessageAction> messageList;
+	protected List<Button> buttonList;
+	protected Map<String, String> label;
+//	protected JSONResult<Object> results;
 	protected String nextUrl;
 	protected String backUrl;
 	protected String nextNamespace; 
