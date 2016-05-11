@@ -1,0 +1,44 @@
+package com.moomanow.core.common.dao;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+
+import com.moomanow.core.common.bean.EntityBean;
+import com.moomanow.core.common.bean.PagingBean;
+import com.moomanow.core.common.exception.NonRollBackException;
+import com.moomanow.core.common.exception.RollBackException;
+import com.moomanow.core.common.exception.RollBackTechnicalException;
+import com.moomanow.core.common.processhandler.ServiceResult;
+
+public interface HibernateBaseEntiyDao<T extends EntityBean> extends HibernateBaseDao {
+
+	public T get(Serializable id);
+
+	public List<T> find(String queryString, Object[] values) throws Exception;
+
+	public List<T> find(String queryString, int firstResult, int maxResults,
+			Object[] values);
+
+	public T findUnique(String queryString, Object[] values)
+			throws NonRollBackException, RollBackException;
+
+	public T findExample(T example);
+
+	public ServiceResult<List<T>> findAndPagingIgnoreCase(PagingBean pagingBean, T example);
+	public ServiceResult<List<T>> findExampleAndPagingIgnoreCase(PagingBean pagingBean, T example);
+	public ServiceResult<List<T>> findExampleAndPaging(PagingBean pagingBean, T example);
+
+	public List<T> findByExample(T example);
+
+	public void saveOrUpdate(T entity);
+
+	public void saveOrUpdateAll(Collection<T> entity);
+
+	public List<T> findAll() throws NonRollBackException, RollBackException;
+
+	public void deleteRow(Serializable id) throws RollBackTechnicalException;
+
+	public void delete(Serializable id) throws RollBackTechnicalException;
+
+}

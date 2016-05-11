@@ -12,6 +12,52 @@
   		<groupId>org.springframework</groupId>
   		<artifactId>spring-context</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>com.moomanow</groupId>
+  		<artifactId>moomanow-struts2-core</artifactId>
+  		<version>0.0.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-jdbc</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.eclipse.persistence</groupId>
+  		<artifactId>javax.persistence</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.aspectj</groupId>
+  		<artifactId>aspectjrt</artifactId>
+  		<version>1.8.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.googlecode.ehcache-spring-annotations</groupId>
+  		<artifactId>ehcache-spring-annotations</artifactId>
+  		<version>1.2.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.hibernate</groupId>
+  		<artifactId>hibernate-core</artifactId>
+  		<version>3.6.10.Final</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-orm</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.google.code.gson</groupId>
+  		<artifactId>gson</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.velocity</groupId>
+  		<artifactId>velocity</artifactId>
+  		<version>1.7</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.jboss.spec.javax.servlet</groupId>
+  		<artifactId>jboss-servlet-api_3.0_spec</artifactId>
+  		<version>1.0.2.Final</version>
+  	</dependency>
   </dependencies>
   
   <build>
@@ -55,4 +101,23 @@
 			</plugin>
 		</plugins>
 	</build>
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>com.moomanow</groupId>
+  			<artifactId>moomanow-struts2-core</artifactId>
+  			<version>0.0.1</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>org.springframework</groupId>
+  			<artifactId>spring-jdbc</artifactId>
+  			<version>4.1.9.RELEASE</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>org.eclipse.persistence</groupId>
+  			<artifactId>javax.persistence</artifactId>
+  			<version>2.1.0</version>
+  		</dependency>
+  	</dependencies>
+  </dependencyManagement>
 </project>
