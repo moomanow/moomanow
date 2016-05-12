@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.moomanow</groupId>
 		<artifactId>moomanow</artifactId>
-		<version>0.0.1</version>
+		<version>${project.version}</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>moomanow-process</artifactId>
@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>com.moomanow</groupId>
 			<artifactId>moomanow-core</artifactId>
-			<version>0.0.1</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 	

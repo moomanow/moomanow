@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.moomanow</groupId>
 	<artifactId>moomanow</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<name>moomanow</name>
 	<packaging>pom</packaging>
 	<parent>
@@ -49,6 +49,7 @@
 	<properties>
 		<java-version>1.7</java-version>
 		<org.slf4j-version>1.7.12</org.slf4j-version>
+		<moomanow-version>0.0.2</moomanow-version>
 	</properties>
 	<description>ss</description>
 	<url>https://github.com/moomanow</url>

@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.moomanow</groupId>
     <artifactId>moomanow</artifactId>
-    <version>0.0.1</version>
+    <version>${project.version}</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>moomanow-core</artifactId>
@@ -15,7 +15,7 @@
   	<dependency>
   		<groupId>com.moomanow</groupId>
   		<artifactId>moomanow-struts2-core</artifactId>
-  		<version>0.0.1</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
