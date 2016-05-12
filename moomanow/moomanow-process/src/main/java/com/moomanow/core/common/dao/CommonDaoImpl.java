@@ -504,9 +504,7 @@ public class CommonDaoImpl implements CommonDao {
 
 	@Override
 	public <T> List<T> nativeQuery(String sql, Object... params) throws RollBackException, NonRollBackException {
-		Class resultSetMapping = params.getClass();
-		
-		Query query = entityManager.createNativeQuery(sql, resultSetMapping);
+		Query query = entityManager.createNativeQuery(sql);
 		for (int i = 0; i < params.length; i++) {
 			Object object = params[i];
 			query.setParameter(i+1, object);

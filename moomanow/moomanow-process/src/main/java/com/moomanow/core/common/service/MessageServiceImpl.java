@@ -24,8 +24,6 @@ import com.moomanow.core.common.exception.NonRollBackException;
 import com.moomanow.core.common.exception.RollBackException;
 import com.moomanow.core.common.processhandler.ProcessContext;
 
-//import com.google.gson.Gson;
-//import com.google.gson.GsonBuilder;
 
 public class MessageServiceImpl implements MessageService {
 	/**
@@ -34,6 +32,7 @@ public class MessageServiceImpl implements MessageService {
 	private static final Logger logger = Logger.getLogger(MessageServiceImpl.class);
 
     private ConcurrentMap<MessageFormatKey, MessageFormat> messageFormats = new ConcurrentHashMap<MessageFormatKey, MessageFormat>();
+    
 	@Autowired
     private MessageDao messageDao;
 	
