@@ -191,6 +191,7 @@ public abstract class BaseAction extends ActionSupport implements RequestAware,S
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
+	
 
 	
 }

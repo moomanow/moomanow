@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import com.moomanow.core.common.bean.BeanLang;
 import com.moomanow.core.common.bean.Criteria;
 import com.moomanow.core.common.bean.PagingBean;
 import com.moomanow.core.common.bean.PagingBean.Order;
@@ -51,18 +50,6 @@ public class CommonDaoImpl implements CommonDao {
 		}
 		return query;
 	}
-	
-
-	
-//	protected String genQueryStringByExample(Class<?> clazz,List<Criteria> criteriaList, List<Order> orderList,boolean like){
-//		return genQueryStringByExample(clazz, criteriaList, orderList, null);
-//	}
-
-	
-//	protected Long getTotalRowByExample(Class<?> clazz,List<Criteria> criteriaList) {
-//		return getTotalRowByExample(clazz, criteriaList, null);
-//	}
-	
 	
 	protected Long getTotalRowByExample(Class<?> clazz,List<Criteria> criteriaList,String extraWhereClause,boolean like) {
 		StringBuilder countQueryString = new StringBuilder();
@@ -439,13 +426,24 @@ public class CommonDaoImpl implements CommonDao {
 	}
 
 	@Override
+	public <T> T delete(T entity, String langCode3) throws RollBackTechnicalException {
+		return null;
+	}
+
+	@Override
 	public <T> List<T> findByProperty(Class<T> clazz, List<Criteria> criteriaList, PagingBean pagingBean) throws RollBackTechnicalException {
 		return null;
 	}
 
-
 	@Override
 	public <T> List<T> findByProperty(Class<T> clazz, List<Criteria> criteriaList) throws RollBackTechnicalException {
+		return null;
+	}
+
+	@Override
+	public <T> List<T> findByPropertyWithStatus(Class<T> clazz, String propertyName, Object value, String status)
+			throws RollBackException, NonRollBackException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -468,48 +466,6 @@ public class CommonDaoImpl implements CommonDao {
 			InvocationTargetException {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public <T> List<T> query(String jpql, List<Criteria> list) throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> List<T> query(String jpql, String jpqlCount, PagingBean pagingBean, List<Criteria> criteriaList)
-			throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> List<T> queryLike(String jpql, List<Criteria> criteriaList)
-			throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> List<T> queryLike(String jpql, String jpqlCount, List<Criteria> criteriaList, PagingBean pagingBean)throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> List<T> nativeQuery(String sql) throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> List<T> nativeQuery(String sql, Object... params) throws RollBackException, NonRollBackException {
-		Query query = entityManager.createNativeQuery(sql);
-		for (int i = 0; i < params.length; i++) {
-			Object object = params[i];
-			query.setParameter(i+1, object);
-		}
-		return query.getResultList();
 	}
 	
 }

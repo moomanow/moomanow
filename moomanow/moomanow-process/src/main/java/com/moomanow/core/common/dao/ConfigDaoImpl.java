@@ -26,7 +26,7 @@ import com.moomanow.core.common.bean.MessageDefault;
 import com.moomanow.core.common.exception.NonRollBackException;
 import com.moomanow.core.common.exception.RollBackException;
 
-public class ConfigDaoImpl extends CommonDaoImpl implements ConfigDao {
+public class ConfigDaoImpl extends CommonJdbcDaoImpl implements ConfigDao {
 	
 	private static final Logger logger = Logger.getLogger(ConfigDaoImpl.class);
 	
@@ -88,8 +88,135 @@ public class ConfigDaoImpl extends CommonDaoImpl implements ConfigDao {
 	    }
     }
 
+	public static final String SQL_QUERY_MESSAGE = 
+			" SELECT MESSAGE_CODE, MESSAGE_LANG, DISPLAY_TEXT, MESSAGE_DESC, " +
+			" MESSAGE_TYPE, SOLUTION " +
+			" FROM SYS_M_MESSAGE WHERE STATUS = 'A' ";
 	@Override
+	@Cacheable(cacheName = "getMessageMap")
+	public Map<String, Message> getMessageMap() {
+		Map<String, Message> messageMap = new ConcurrentHashMap<String, Message>();
+		
+		List<Message> messageList;
+		try {
+			messageList = nativeQuery(SQL_QUERY_MESSAGE, MESSAGE_MAPPER);
+		} catch (RollBackException | NonRollBackException e) {
+			messageList = new ArrayList<Message>();
+			logger.error("getMessageMap()", e);
+		}//(SQL_QUERY_CONFIG, new configMapper());
+		
+		for (Message message : messageList) {
+			if (logger.isInfoEnabled()) {
+				logger.info("Message loading... " + message);
+			}			
+			messageMap.put(message.getMessageCode()+"_"+message.getMessageLang(), message);
+		}
+		return messageMap;
+	}
+	
+	private static final MessageMapper<Message> MESSAGE_MAPPER = new MessageMapper<Message>();
+	public static final class MessageMapper<T extends Message> implements RowMapper<Message> {
+
+	    public Message mapRow(ResultSet rs, int num)throws SQLException {
+	    	MessageDefault message = new MessageDefault(); 
+	    	message.setMessageCode(rs.getString("MESSAGE_CODE"));
+	    	message.setMessageLang(rs.getString("MESSAGE_LANG"));
+	    	message.setDisplayText(rs.getString("DISPLAY_TEXT"));
+	    	message.setMessageDesc(rs.getString("MESSAGE_DESC"));
+	    	message.setMessageType(rs.getString("MESSAGE_TYPE"));
+	    	message.setSolution(rs.getString("SOLUTION"));
+	        return message;
+	    }
+    }
+	
+	@Override
+	public List<Message> getMessageList(String messageType, String messageLang)throws RollBackException ,NonRollBackException {
+		
+		StringBuilder whereClause = new StringBuilder();
+		Map<String,Object> params = new ConcurrentHashMap<String, Object>();
+		
+		if( messageType != null && messageType.length() > 0 ){
+			whereClause.append(" AND MESSAGE_TYPE LIKE :messageType ");
+			params.put("messageType", "%"+messageType+"%");
+		}
+		if( messageLang != null && messageLang.length() > 0 ){
+			whereClause.append(" AND MESSAGE_LANG = :messageLang ");
+			params.put("messageLang", messageLang);
+		}
+		return nativeQuery(SQL_QUERY_MESSAGE+whereClause.toString(), MESSAGE_MAPPER, params);
+	}
+
+	
+	@Override
+	@TriggersRemove(cacheName="getActionByActionId", removeAll=true)
 	public void clearConfigCache() throws RollBackException ,NonRollBackException{
 		
 	}
+
+	@Override
+	@TriggersRemove(cacheName="getMessageMap", removeAll=true)
+	public void clearMessageCache() throws RollBackException ,NonRollBackException{
+		
+	}
+	
+	public static final String SQL_QUERY_PAGE_FIELD_VALIDATORS = 
+			" SELECT * " +
+			" FROM SYS_M_FIELD_VALIDATOR  WHERE STATUS = 'A' ";
+	
+	
+	@Override
+	public Map<String, String> getActionInputResult() throws RollBackException ,NonRollBackException{
+		Map<String, String> actionInputResult = new ConcurrentHashMap<String, String>();
+		List<ActionBean> actionBeans = nativeQuery(SQL_QUERY_ACTION_INPUT_RESULT,ACTION_MAPPER);//(SQL_QUERY_CONFIG, new configMapper());
+		
+		for (ActionBean actionBean : actionBeans) {
+			if(actionBean.getInputResultName()!=null&&(actionBean.getActionName()!=null||actionBean.getNameSpace()!=null))
+			actionInputResult.put(actionBean.getNameSpace()+"/"+actionBean.getActionName(), actionBean.getInputResultName());
+		}
+		return actionInputResult;
+	}
+	public static final String SQL_QUERY_ACTION_INPUT_RESULT = "SELECT * FROM SYS_M_ACTION  WHERE STATUS = 'A' ";
+	
+	private static final ActionMapper<ActionBean> ACTION_MAPPER = new ActionMapper<ActionBean>();
+	public static final class ActionMapper<T extends ActionBean> implements RowMapper<ActionBean> {
+
+	    public ActionBean mapRow(ResultSet rs, int num)throws SQLException {
+	    	ActionBean displayFiled = new ActionBean();
+	    	displayFiled.setActionName(rs.getString("ACTION_NAME"));
+	    	displayFiled.setNameSpace(rs.getString("NAME_SPACE"));
+	    	displayFiled.setInputResultName(rs.getString("INPUT_RESULT_NAME"));
+//	    	displayFiled.setParameter(rs.getString("PARAMETER"));
+//	    	displayFiled.setMessage(rs.getString("MESSAGE"));
+//	    	displayFiled.setMessageParameter(rs.getString("MESSAGE_PARAMETER"));
+	        return displayFiled;
+	    }
+    }
+	
+	private static final String SQL_QUERY_CONFIG_BY_DATE = "SELECT ID_REF_DATA, CONFIG_KEY, CONFIG_VALUE FROM SYS_M_CONFIG_BY_DATE WHERE STATUS = 'A' ";
+	
+	@Override
+	public Map<String, String> getConfigDateMap() throws RollBackException, NonRollBackException {
+		Map<String, String> configMap = new ConcurrentHashMap<String, String>();
+		List<ConfigByDate> configList = nativeQuery(SQL_QUERY_CONFIG_BY_DATE, CONFIG_BY_DATE_MAPPER);//(SQL_QUERY_CONFIG, new configMapper());
+		for (ConfigByDate systemConfig : configList) {
+			if (logger.isInfoEnabled()) {
+				logger.info("Config loading... " + systemConfig);
+			}	
+			configMap.put(systemConfig.getKey(), systemConfig.getValue());
+		}
+		return configMap;
+	}
+	
+	private static final ConfigByDateMapper<ConfigByDate> CONFIG_BY_DATE_MAPPER = new ConfigByDateMapper<ConfigByDate>();
+	public static final class ConfigByDateMapper<T extends ConfigByDate> implements RowMapper<ConfigByDate> {
+
+	    public ConfigByDate mapRow(ResultSet rs, int num)throws SQLException {
+	    	ConfigByDate configByDate = new ConfigByDate();
+	    	configByDate.setKey( rs.getString("ID_REF_DATA")+ "_"+rs.getString("CONFIG_KEY"));
+	    	configByDate.setValue( rs.getString("CONFIG_VALUE"));
+	    	configByDate.setIdRefData(Long.parseLong(rs.getString("ID_REF_DATA")));
+	    	
+	        return configByDate;
+	    }
+    } 
 }
