@@ -9,8 +9,6 @@ import com.moomanow.core.common.bean.PagingBean;
 import com.moomanow.core.common.exception.NonRollBackException;
 import com.moomanow.core.common.exception.RollBackException;
 
-
-
 public interface CommonDao {
 
 
@@ -52,6 +50,7 @@ public interface CommonDao {
 	 * @throws RollBackException ,NonRollBackException
 	 */
 	public <T> T delete(T entity) throws RollBackException ,NonRollBackException;
+	public <T> T delete(T entity,String langCode3) throws RollBackException ,NonRollBackException;
 	
 	/**
 	 * Find by primary key. 
@@ -72,7 +71,8 @@ public interface CommonDao {
 	 * @throws RollBackException ,NonRollBackException
 	 */
 	public <T extends Object > List<T> findByProperty( Class<T> clazz, final String propertyName, final Object value ) throws RollBackException ,NonRollBackException;
-	public <T extends Object > List<T> findByProperty( Class<T> clazz, final String propertyName, final Object value, PagingBean pagingBean ) throws RollBackException ,NonRollBackException;
+	public <T extends Object > List<T> findByPropertyWithStatus( Class<T> clazz, final String propertyName, final Object value, String status ) throws RollBackException ,NonRollBackException;
+	public <T extends Object > List<T> findByProperty( Class<T> clazz, String propertyName, final Object value, PagingBean pagingBean ) throws RollBackException ,NonRollBackException;
 	
 	/**
 	 * Execute a query based on the given example entity object. <br/>
@@ -178,13 +178,6 @@ public interface CommonDao {
 	 * @param list - criteria list append to JPQL )
 	 * @return List of Objects return by the query
 	 */
-	public <T extends Object > List<T> query(String jpql, final List<Criteria> list)throws RollBackException ,NonRollBackException;
-	
-	public <T extends Object > List<T> query(String jpql, String jpqlCount, PagingBean pagingBean, final List<Criteria> criteriaList) throws RollBackException ,NonRollBackException;
-	
-	public <T extends Object > List<T> queryLike(String jpql, final List<Criteria> criteriaList ) throws RollBackException ,NonRollBackException;
-	
-	public <T extends Object > List<T> queryLike(String jpql, String jpqlCount, final List<Criteria> criteriaList, PagingBean pagingBean ) throws RollBackException ,NonRollBackException;
 
 	/**
 	 * Query with JPQL which return only single result <br/>
@@ -195,8 +188,6 @@ public interface CommonDao {
 	public <T extends Object> T querySingleResult(String jpql, Class<T> clazz)throws RollBackException ,NonRollBackException;
 	
 	public <T extends Object> T querySingleResult(String jpql, Class<T> clazz, Object... params)throws RollBackException ,NonRollBackException;
-	
-//	public Object querySingleResult(String jpql, final List<Criteria> list)throws RollBackException ,NonRollBackException;
 	
 	/**
 	 * Execute Multi SQL Statements separated by semicolon ';'
@@ -216,25 +207,22 @@ public interface CommonDao {
 	
 	public int executeNativeSQL(String sql, Object... params)throws RollBackException ,NonRollBackException;
 	
-	/**
-	 * Execute Native SQL for Query <br/>
-	 * Result as List<Object[]> ( So not easy to using the result ) <br/>
-	 *  <br/>
-	 * Example : <br/>
-	 * 	List<Object[]> result = (List<Object[]>) commonDAO.nativeQuery("SELECT * FROM AGI_USER") throws RollBackException ,NonRollBackException ; <br/>
-	 * 	for (Object[] objects : result) {			 <br/>
-	 * 		System.out.println( objects[0] + " : " + objects[1] ) throws RollBackException ,NonRollBackException ; <br/>
-	 * 	} <br/>
-	 *  <br/>
-	 * WARNING : Using Native SQL will may cause losing Database vendor migration ability <br/>
-	 * avoid specific vendor SQL Command as possible
-	 * @param sql - Native SQL 
-	 * @return Result as List<Object[]> ( So not easy to using the result )
-	 * @throws RollBackException ,NonRollBackException 
-	 */
-	public <T extends Object >  List<T> nativeQuery(String sql) throws RollBackException ,NonRollBackException ;
-
-	public <T extends Object >  List<T> nativeQuery(String sql, Object... params) throws RollBackException ,NonRollBackException ;
+//	/**
+//	 * Execute Native SQL for Query <br/>
+//	 * Result as List<Object[]> ( So not easy to using the result ) <br/>
+//	 *  <br/>
+//	 * Example : <br/>
+//	 * 	List<Object[]> result = (List<Object[]>) commonDAO.nativeQuery("SELECT * FROM AGI_USER") throws RollBackException ,NonRollBackException ; <br/>
+//	 * 	for (Object[] objects : result) {			 <br/>
+//	 * 		System.out.println( objects[0] + " : " + objects[1] ) throws RollBackException ,NonRollBackException ; <br/>
+//	 * 	} <br/>
+//	 *  <br/>
+//	 * WARNING : Using Native SQL will may cause losing Database vendor migration ability <br/>
+//	 * avoid specific vendor SQL Command as possible
+//	 * @param sql - Native SQL 
+//	 * @return Result as List<Object[]> ( So not easy to using the result )
+//	 * @throws RollBackException ,NonRollBackException 
+//	 */
 	
 	/**
 	 * Execute Native SQL for Query with Mapping Class <br/>
@@ -288,6 +276,5 @@ public interface CommonDao {
 	public <T> List<T> saveMergeList(Class<T> clazz, List<T> newList, List<T> oldList) throws RollBackException, NonRollBackException, IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 	public <T> List<T> saveMergeList(Class<T> clazz, List<T> newList, List<T> oldList, String SubListColumnName) throws RollBackException, NonRollBackException, IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 	
-
 	
 }

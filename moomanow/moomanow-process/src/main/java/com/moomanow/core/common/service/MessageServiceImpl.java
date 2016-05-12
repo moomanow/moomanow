@@ -13,17 +13,20 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 import com.moomanow.core.common.bean.Message;
 import com.moomanow.core.common.bean.MessageDefault;
 import com.moomanow.core.common.constant.CommonConstant;
 import com.moomanow.core.common.constant.MessageCode;
 import com.moomanow.core.common.context.CurrentThread;
-import com.moomanow.core.common.dao.MessageDao;
+import com.moomanow.core.common.dao.ConfigDao;
 import com.moomanow.core.common.exception.NonRollBackException;
 import com.moomanow.core.common.exception.RollBackException;
 import com.moomanow.core.common.processhandler.ProcessContext;
 
+//import com.google.gson.Gson;
+//import com.google.gson.GsonBuilder;
 
 public class MessageServiceImpl implements MessageService {
 	/**
@@ -32,16 +35,19 @@ public class MessageServiceImpl implements MessageService {
 	private static final Logger logger = Logger.getLogger(MessageServiceImpl.class);
 
     private ConcurrentMap<MessageFormatKey, MessageFormat> messageFormats = new ConcurrentHashMap<MessageFormatKey, MessageFormat>();
-    
+	private ConfigDao configDao;
 	@Autowired
-    private MessageDao messageDao;
+	@Required
+	public void setConfigDao(ConfigDao configDao) {
+		this.configDao = configDao;
+	}
 	
 
 
 	@Override
 	public void load() {
 		try {
-			messageDao.getMessageMap();
+			configDao.getMessageMap();
 		} catch (RollBackException | NonRollBackException e) {
 			logger.error("load()", e);
 		}
@@ -51,7 +57,7 @@ public class MessageServiceImpl implements MessageService {
 	public void clearCache() {
 		messageFormats = new ConcurrentHashMap<MessageFormatKey, MessageFormat>(); 
 		try {
-			messageDao.clearMessageCache();
+			configDao.clearMessageCache();
 		} catch (RollBackException | NonRollBackException e) {
 			logger.error("clearCache()", e);
 		}
@@ -73,7 +79,7 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	public List<Message> getMessageList(String lang, String messageType) {
 		try {
-			return messageDao.getMessageList(messageType, lang);
+			return configDao.getMessageList(messageType, lang);
 		} catch (RollBackException | NonRollBackException e) {
 			logger.error("getMessageList(String, String)", e);
 		}
@@ -92,7 +98,7 @@ public class MessageServiceImpl implements MessageService {
 		if(lang == null){lang = CommonConstant.DEFAULT_LOCALE.getISO3Language().toUpperCase();}
 		Map<String, Message> messageMap;
 		try {
-			messageMap = messageDao.getMessageMap();
+			messageMap = configDao.getMessageMap();
 		} catch (RollBackException | NonRollBackException e) {
 			messageMap = new  HashMap<String, Message>();
 			logger.error("getMessage(String, String, String[])", e);
