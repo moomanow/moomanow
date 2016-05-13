@@ -2,16 +2,20 @@ package com.moomanow.core.common.dao;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.QueryHint;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.RowMapper;
 
 import com.moomanow.core.common.bean.Criteria;
 import com.moomanow.core.common.bean.PagingBean;
@@ -377,24 +381,52 @@ public class CommonDaoImpl implements CommonDao {
 
 	@Override
 	public int executeNativeSQL(String sql) throws RollBackTechnicalException {
-		return 0;
+		Query query = entityManager.createNativeQuery(sql);
+		return query.executeUpdate();
 	}
 
 	@Override
 	public int executeNativeSQL(String sql, Object... params) throws RollBackTechnicalException {
-		return 0;
+		Query query = entityManager.createNativeQuery(sql);
+		for (int i = 0; i < params.length; i++) {
+			Object object = params[i];
+			query.setParameter(i+1, object);
+		}
+		return query.executeUpdate();
 	}
 
 	@Override
 	public <T> List<T> nativeQuery(String sql, Class<T> clazz) throws RollBackTechnicalException {
-		return null;
+		Query query = entityManager.createNativeQuery(sql, clazz);
+		return query.getResultList();
 	}
 
 	@Override
 	public <T> List<T> nativeQuery(String sql, Class<T> clazz, Object... params) throws RollBackTechnicalException {
-		return null;
+		Query query = entityManager.createNativeQuery(sql, clazz);
+		for (int i = 0; i < params.length; i++) {
+			Object object = params[i];
+			query.setParameter(i+1, object);
+		}
+		return query.getResultList();
 	}
-
+	@Override
+	public <T> List<T> nativeQuery(String sql, MapMapper<T> mapMapper, Object... params) throws RollBackTechnicalException {
+		Query query = entityManager.createNativeQuery(sql);
+//		query.setHint(hintName, value);
+		for (int i = 0; i < params.length; i++) {
+			Object object = params[i];
+			query.setParameter(i+1, object);
+		}
+		List<T> list = new LinkedList<T>();
+		List<Map<String, Object>> listMap = query.getResultList();
+		for (int i = 0; i < listMap.size(); i++) {
+			Map<String, Object> object = listMap.get(i);
+			T t = mapMapper.mapRow(object , i+1);
+			list.add(t);
+		}
+		return list;
+	}
 	@Override
 	public <T> List<T> nativeQuery(String sql, Class<T> clazz, PagingBean pagingBean) throws RollBackTechnicalException {
 		return null;

@@ -346,5 +346,12 @@ public class CommonJdbcDaoImpl extends JdbcCommonDaoImpl implements CommonDao {
 		
 	}
 
+	@Override
+	public <T> List<T> nativeQuery(String sql, MapMapper<T> rowMapper, Object[] params)
+			throws RollBackTechnicalException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
