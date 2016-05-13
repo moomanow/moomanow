@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.moomanow</groupId>
     <artifactId>moomanow</artifactId>
-    <version>${project.version}</version>
+    <version>0.0.2</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>moomanow-dao</artifactId>
@@ -11,7 +11,7 @@
   	<dependency>
   		<groupId>com.moomanow</groupId>
   		<artifactId>moomanow-core</artifactId>
-  		<version>${project.version}</version>
+  		<version>0.0.2</version>
   	</dependency>
   </dependencies>
   
