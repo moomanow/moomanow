@@ -8,6 +8,8 @@ import com.moomanow.core.common.bean.Criteria;
 import com.moomanow.core.common.bean.PagingBean;
 import com.moomanow.core.common.exception.NonRollBackException;
 import com.moomanow.core.common.exception.RollBackException;
+import com.moomanow.core.common.exception.RollBackTechnicalException;
+import com.moomanow.core.common.exception.TechnicalException;
 
 public interface CommonDao {
 
@@ -275,6 +277,8 @@ public interface CommonDao {
 	
 	public <T> List<T> saveMergeList(Class<T> clazz, List<T> newList, List<T> oldList) throws RollBackException, NonRollBackException, IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 	public <T> List<T> saveMergeList(Class<T> clazz, List<T> newList, List<T> oldList, String SubListColumnName) throws RollBackException, NonRollBackException, IllegalAccessException, IllegalArgumentException, InvocationTargetException;
+	
+	public <T> List<T> nativeQuery(String sql, MapMapper<T> rowMapper, Object[] params) throws RollBackTechnicalException;
 	
 	
 }
