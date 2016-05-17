@@ -1179,9 +1179,20 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 	}
 	@Override
 	public <T> T save(T target) throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
+		return save(target, false,null);
 	}
+	
+	@Override
+	public <T extends Object> T save(T target, boolean tableLang, String langCode) throws RollBackException, NonRollBackException {
+		Class<? extends Object> clazz = target.getClass();
+		ClassMapper classMapper =JPAUtil.getClassMapper(clazz);
+		Method methodSetId = classMapper.getPropertyId().getMethodSet();
+		Method methodGetId = classMapper.getPropertyId().getMethodGet();
+		KeyHolder keyHolder = saveKeyHolder(target, tableLang, langCode);
+		target = idToBean(keyHolder,target,methodSetId, methodGetId);
+ 		return target;
+	}
+	
 	@Override
 	public <T> T saveOrUpdate(T t) throws RollBackException, NonRollBackException {
 		// TODO Auto-generated method stub
@@ -1189,9 +1200,190 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 	}
 	@Override
 	public <T> T update(T target) throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
+		return update(target,false,null,null);
 	}
+	
+	@Override
+	public <T extends Object> T update(T target, boolean tableLang, String langCode,Long idLang) throws RollBackException, NonRollBackException{
+		if(target instanceof EntityBean){
+			ProcessContext processContext = CurrentThread.getProcessContext();
+			EntityBean entityBean = (EntityBean) target;
+			entityBean.setUpdateDate(new Date());
+			entityBean.setUpdateUser(processContext.getUserName());
+		}
+		int i=0;
+		Class<? extends Object> clazz = target.getClass();
+		ClassMapper classMapper =JPAUtil.getClassMapper(clazz);
+		StringBuilder sb = new StringBuilder();
+		Table table = clazz.getAnnotation(Table.class);
+		List<Criteria> setList = new LinkedList<Criteria>();
+		List<Criteria> pkParaList = new LinkedList<Criteria>();
+		Map<String, Object> para = new HashMap<String, Object>();
+		
+		sb.append(" UPDATE ");
+		if(langCode != null && !langCode.equals("")){
+			setList.add(new Criteria("LANG_CODE3",(Object)langCode,"LANG_CODE3"+i++));
+		}
+		for (String  columnName : classMapper.getColumn().keySet()) {
+			for(Property property : classMapper.getColumn().get(columnName)){
+				Method method = property.getMethodGet();
+				try {
+//					checkColumnNameInTableLang
+					if(!tableLang||(tableLang && checkService.checkColumnNameInTableLang(table.name(), columnName))){
+						if(property.getColumnType() == ColumnType.joinColumns){
+							Object joinColumnsObject = property.getJoinColumns().getMethodGet().invoke(target);
+							if(joinColumnsObject!=null){
+								if(property.getEmbeddedId()!=null)
+									joinColumnsObject = property.getEmbeddedId().getMethodGet().invoke(joinColumnsObject);
+								Object value = property.getMethodGet().invoke(joinColumnsObject);
+
+								if(value != null){
+									//pregen
+									if(value instanceof Number){
+										if(((Number)value).intValue() ==-1){
+											if(checkService.checkIncludeMinusOne(table.name(),columnName)){
+												setList.add(new Criteria(columnName,value,columnName+i++));
+											}else{
+												setList.add(new Criteria(columnName,(Object)null,columnName+i++));
+											}
+										}else{
+											setList.add(new Criteria(columnName,value,columnName+i++));
+										}
+									}else if(value instanceof Date){
+										if(((Date) value).getTime() == 0L){
+											setList.add(new Criteria(columnName,(Object)null,columnName+i++));
+										}else{
+											setList.add(new Criteria(columnName,value,columnName+i++));
+										}
+									}else{
+										setList.add(new Criteria(columnName,value,columnName+i++));
+									}
+									//pregen
+								}
+							}
+							
+						}
+						if(property.getColumnType() == ColumnType.joinColumn||property.getColumnType() == ColumnType.column){
+							Object value = method.invoke(target);
+							if(value == null)
+								continue;
+							Entity entity = method.getReturnType().getAnnotation(Entity.class);
+							if(entity!=null){
+								ClassMapper classMapperId = JPAUtil.getClassMapper(method.getReturnType());
+								value = classMapperId.getPropertyId().getMethodGet().invoke(value);
+							}
+							if(value != null){
+								//pregen
+								if(value instanceof Number){
+									if(((Number)value).intValue() ==-1){
+										if(checkService.checkIncludeMinusOne(table.name(),columnName)){
+											setList.add(new Criteria(columnName,value,columnName+i++));
+										}else if (checkService.checkClearableList(table.name(),columnName)){
+											setList.add(new Criteria(columnName,(Object)null,columnName+i++));
+										}
+									}else{
+										setList.add(new Criteria(columnName,value,columnName+i++));
+									}
+								}else if(value instanceof Date){
+									if(((Date) value).getTime() == 0L){
+										setList.add(new Criteria(columnName,(Object)null,columnName+i++));
+									}else{
+										setList.add(new Criteria(columnName,value,columnName+i++));
+									}
+								}else{
+									setList.add(new Criteria(columnName,value,columnName+i++));
+								}
+								//pregen
+							}
+						}
+					}//case checkColumnNameInTableLang
+					
+					if(property.getColumnType() == ColumnType.id){
+						Object value = method.invoke(target);
+						if(value != null){
+							if(tableLang){
+								pkParaList.add(new Criteria(columnName+"_LANG",idLang,columnName+"_LANG"+i++));
+							}else{
+								pkParaList.add(new Criteria(columnName,value,columnName+i++));
+							}
+						}
+					}
+					
+					if(property.getColumnType() == ColumnType.embeddedId){
+						Object embeddedIdObject = property.getEmbeddedId().getMethodGet().invoke(target);
+						if(embeddedIdObject!=null){
+							Object valueEmbeddedId = method.invoke(embeddedIdObject);
+							if(valueEmbeddedId!=null){
+								if(tableLang&&(columnName+"_LANG").equals(checkService.getPkTableLangByTableName(table.name()))){
+									pkParaList.add(new Criteria(columnName+"_LANG",idLang,columnName+"_LANG"+i++));
+								}else{
+									pkParaList.add(new Criteria(columnName,valueEmbeddedId,columnName+i++));
+								}
+								
+							}
+						}
+					}
+					
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					logger.error("update(T, boolean)", e); //$NON-NLS-1$
+				}
+			}
+		}
+		if(tableLang){
+			pkParaList.add(new Criteria("LANG_CODE3",(Object)langCode,"LANG_CODE3"+i++));
+		}
+		if(tableLang)
+			sb.append(table.name()+"_LANG");
+		else
+			sb.append(table.name());
+		sb.append(" SET ");
+		for (int y = 0; y < setList.size(); y++) {
+			Criteria craCriteria = setList.get(y);
+			sb.append( y > 0 ? ",":"" );
+			sb.append(PI_CLOUM+craCriteria.getColumn()+PI_CLOUM);
+			sb.append(" = ");
+			if(craCriteria.getValue()==null){
+				sb.append(" (NULL) ");
+			}else{
+				sb.append(COLON);
+				sb.append(craCriteria.getParam());
+				para.put(craCriteria.getParam(), craCriteria.getValue());
+			}
+		}
+		if(pkParaList.size() > 0){
+			sb.append(" WHERE ");
+			for (int y = 0; y < pkParaList.size(); y++) {
+				Criteria craCriteria = pkParaList.get(y);
+				sb.append( y > 0 ? " AND ":"" );
+				sb.append(PI_CLOUM+craCriteria.getColumn()+PI_CLOUM);
+				sb.append(" = ");
+				sb.append(COLON);
+				sb.append(craCriteria.getParam());
+				para.put(craCriteria.getParam(), craCriteria.getValue());
+			}
+		}
+		
+		if(setList.size() > 0&&pkParaList.size() > 0){
+			int row = 0;
+			try{
+				row = executeNativeSQL(sb.toString(),para);
+			} catch (BadSqlGrammarException ba) {
+				throw new RollBackTechnicalException(CommonMessageCode.COM4993,ba);
+			}
+			if(row == 0){
+				throw new RollBackTechnicalException(CommonMessageCode.COM4993," Row Update 0 SQL:" + sb.toString());
+			}
+		}else{
+			if (logger.isDebugEnabled()) {
+				logger.debug("update(T, boolean) - column size 0"); //$NON-NLS-1$
+			}
+			throw new RollBackTechnicalException(CommonMessageCode.COM4993,"pk size 0");
+
+		}
+		
+		return target;
+	}
+	
 	@Override
 	public <T> List<T> findByColumn(Class<T> clazz, List<Criteria> criteriaList, PagingBean pagingBean)
 			throws RollBackException, NonRollBackException {

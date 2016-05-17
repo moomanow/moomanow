@@ -120,4 +120,8 @@ public interface JdbcCommonDao {
 
 	public Integer getCount(String sql, Object... params) throws RollBackException,NonRollBackException;
 
+	public <T> T save(T target, boolean tableLang, String langCode) throws RollBackException, NonRollBackException;
+
+	public <T> T update(T target, boolean tableLang, String langCode, Long idLang) throws RollBackException, NonRollBackException;
+
 }
