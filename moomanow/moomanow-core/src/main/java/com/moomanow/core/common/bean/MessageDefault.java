@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.moomanow.core.common.constant.MessageCode;
 
-public class MessageDefault implements Message ,Serializable {
+public class MessageDefault implements IMessage ,Serializable {
 
 	private static final long serialVersionUID = 4185236553424677037L;
 

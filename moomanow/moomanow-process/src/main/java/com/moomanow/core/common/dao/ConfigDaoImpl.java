@@ -21,7 +21,7 @@ import com.moomanow.core.common.bean.Config;
 import com.moomanow.core.common.bean.ConfigByCountry;
 import com.moomanow.core.common.bean.ConfigByDate;
 import com.moomanow.core.common.bean.ConfigDefault;
-import com.moomanow.core.common.bean.Message;
+import com.moomanow.core.common.bean.IMessage;
 import com.moomanow.core.common.bean.MessageDefault;
 import com.moomanow.core.common.exception.NonRollBackException;
 import com.moomanow.core.common.exception.RollBackException;
@@ -94,18 +94,18 @@ public class ConfigDaoImpl extends CommonJdbcDaoImpl implements ConfigDao {
 			" FROM SYS_M_MESSAGE WHERE STATUS = 'A' ";
 	@Override
 	@Cacheable(cacheName = "getMessageMap")
-	public Map<String, Message> getMessageMap() {
-		Map<String, Message> messageMap = new ConcurrentHashMap<String, Message>();
+	public Map<String, IMessage> getMessageMap() {
+		Map<String, IMessage> messageMap = new ConcurrentHashMap<String, IMessage>();
 		
-		List<Message> messageList;
+		List<IMessage> messageList;
 		try {
 			messageList = nativeQuery(SQL_QUERY_MESSAGE, MESSAGE_MAPPER);
 		} catch (RollBackException | NonRollBackException e) {
-			messageList = new ArrayList<Message>();
+			messageList = new ArrayList<IMessage>();
 			logger.error("getMessageMap()", e);
 		}//(SQL_QUERY_CONFIG, new configMapper());
 		
-		for (Message message : messageList) {
+		for (IMessage message : messageList) {
 			if (logger.isInfoEnabled()) {
 				logger.info("Message loading... " + message);
 			}			
@@ -114,10 +114,10 @@ public class ConfigDaoImpl extends CommonJdbcDaoImpl implements ConfigDao {
 		return messageMap;
 	}
 	
-	private static final MessageMapper<Message> MESSAGE_MAPPER = new MessageMapper<Message>();
-	public static final class MessageMapper<T extends Message> implements RowMapper<Message> {
+	private static final MessageMapper<IMessage> MESSAGE_MAPPER = new MessageMapper<IMessage>();
+	public static final class MessageMapper<T extends IMessage> implements RowMapper<IMessage> {
 
-	    public Message mapRow(ResultSet rs, int num)throws SQLException {
+	    public IMessage mapRow(ResultSet rs, int num)throws SQLException {
 	    	MessageDefault message = new MessageDefault(); 
 	    	message.setMessageCode(rs.getString("MESSAGE_CODE"));
 	    	message.setMessageLang(rs.getString("MESSAGE_LANG"));
@@ -130,7 +130,7 @@ public class ConfigDaoImpl extends CommonJdbcDaoImpl implements ConfigDao {
     }
 	
 	@Override
-	public List<Message> getMessageList(String messageType, String messageLang)throws RollBackException ,NonRollBackException {
+	public List<IMessage> getMessageList(String messageType, String messageLang)throws RollBackException ,NonRollBackException {
 		
 		StringBuilder whereClause = new StringBuilder();
 		Map<String,Object> params = new ConcurrentHashMap<String, Object>();

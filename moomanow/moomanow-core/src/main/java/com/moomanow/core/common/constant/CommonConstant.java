@@ -13,6 +13,9 @@ public interface CommonConstant {
     public static final String DEFAULT_LANG_KEY = "ENG";
     public static final String DEFAULT_LANG_CONFIG = "DEFAULT_LANG_CONFIG";
 	public static final String ENG = "ENG";
+	
+	public static final String PROCESS_STATUS_SUCCESS = "S";
+    public static final String PROCESS_STATUS_FAIL = "F";
     
     public static interface SESSION {
 	// public static final String USER_BEAN = "SESSION_USER_BEAN";

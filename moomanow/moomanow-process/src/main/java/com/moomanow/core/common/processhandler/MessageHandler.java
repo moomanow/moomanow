@@ -4,8 +4,8 @@ import com.moomanow.core.common.exception.BaseException;
 
 public interface MessageHandler {
 
-	<T extends Object> ServiceResult<T> addMessage(ServiceResult<T> returnValue);
+	<T extends Object> IProcessResult<T> addMessage(IProcessResult<T> returnValue);
 
-	<T extends Object> ServiceResult<T> addMessage(ServiceResult<T> returnValue,BaseException baseException);
+	<T extends Object> IProcessResult<T> addMessage(IProcessResult<T> returnValue,BaseException baseException);
 
 }

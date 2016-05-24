@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
-import com.moomanow.core.common.bean.Message;
+import com.moomanow.core.common.bean.IMessage;
 import com.moomanow.core.common.constant.CommonConstant;
 import com.moomanow.core.common.context.CurrentThread;
 import com.moomanow.core.common.exception.BaseException;
@@ -21,13 +21,13 @@ public class BasicMessageHandler implements MessageHandler {
 		this.messageService = messageService;
 	}
 	@Override
-	public <T> ServiceResult<T> addMessage(ServiceResult<T> serviceResult) {
+	public <T> IProcessResult<T> addMessage(IProcessResult<T> serviceResult) {
 		ProcessContext processContext = CurrentThread.getProcessContext();
-		List<Message> messageOutList = new LinkedList<Message>();
-		List<Message> messageList = processContext.messageList;
+		List<IMessage> messageOutList = new LinkedList<IMessage>();
+		List<IMessage> messageList = processContext.messageList;
 		if(messageList!=null && messageList.size()>0){
-			for (Message message : messageList) {
-				Message messageOut = messageService.getMessage(message.getMessageCode(),message.getPara());
+			for (IMessage message : messageList) {
+				IMessage messageOut = messageService.getMessage(message.getMessageCode(),message.getPara());
 				if(messageOut!=null)
 				messageOutList.add(messageOut);
 			}
@@ -44,10 +44,10 @@ public class BasicMessageHandler implements MessageHandler {
 
 
 	@Override
-	public <T> ServiceResult<T> addMessage(ServiceResult<T> serviceResult,BaseException baseException){
-		List<Message> messageOutList = new LinkedList<Message>();
+	public <T> IProcessResult<T> addMessage(IProcessResult<T> serviceResult,BaseException baseException){
+		List<IMessage> messageOutList = new LinkedList<IMessage>();
 		if(baseException!=null&&baseException.getMessageCode()!=null){
-				Message messageOut = messageService.getMessage(baseException.getMessageCode().getCode(),new String[]{});
+				IMessage messageOut = messageService.getMessage(baseException.getMessageCode().getCode(),new String[]{});
 				if(messageOut!=null)
 				messageOutList.add(messageOut);
 			serviceResult.setMessages(messageOutList);

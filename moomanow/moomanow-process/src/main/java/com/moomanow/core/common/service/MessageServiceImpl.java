@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
-import com.moomanow.core.common.bean.Message;
+import com.moomanow.core.common.bean.IMessage;
 import com.moomanow.core.common.bean.MessageDefault;
 import com.moomanow.core.common.constant.CommonConstant;
 import com.moomanow.core.common.constant.MessageCode;
@@ -66,45 +66,45 @@ public class MessageServiceImpl implements MessageService {
 
 
 	@Override
-	public List<Message> getMessageList() {
+	public List<IMessage> getMessageList() {
 		return getMessageList( null, null );
 	}
 
 
 	@Override
-	public List<Message> getMessageList(String lang) {
+	public List<IMessage> getMessageList(String lang) {
 		return getMessageList(lang,null);
 	}
 	
 	@Override
-	public List<Message> getMessageList(String lang, String messageType) {
+	public List<IMessage> getMessageList(String lang, String messageType) {
 		try {
 			return configDao.getMessageList(messageType, lang);
 		} catch (RollBackException | NonRollBackException e) {
 			logger.error("getMessageList(String, String)", e);
 		}
-		return new ArrayList<Message>();
+		return new ArrayList<IMessage>();
 	}
 	
 	
 	@Override
-	public Message getMessage(String messageCode, Locale locale,String[] para) {
+	public IMessage getMessage(String messageCode, Locale locale,String[] para) {
 		if(locale == null){locale = CommonConstant.DEFAULT_LOCALE;}
 		return getMessage(messageCode, locale.getISO3Language().toUpperCase(),para);
 	}
 
 	@Override
-	public Message getMessage(String messageCode, String lang,String[] para){
+	public IMessage getMessage(String messageCode, String lang,String[] para){
 		if(lang == null){lang = CommonConstant.DEFAULT_LOCALE.getISO3Language().toUpperCase();}
-		Map<String, Message> messageMap;
+		Map<String, IMessage> messageMap;
 		try {
 			messageMap = configDao.getMessageMap();
 		} catch (RollBackException | NonRollBackException e) {
-			messageMap = new  HashMap<String, Message>();
+			messageMap = new  HashMap<String, IMessage>();
 			logger.error("getMessage(String, String, String[])", e);
 		}
 		Object objt = org.apache.commons.lang.SerializationUtils.clone(messageMap.get(messageCode+"_"+lang));
-		Message message = (Message) objt;
+		IMessage message = (IMessage) objt;
 		if(para!=null&&para.length>0){
 			MessageFormat mf = buildMessageFormat(message.getDisplayText(), CommonConstant.DEFAULT_LOCALE);
 			String  out = formatWithNullDetection(mf, para);
@@ -122,7 +122,7 @@ public class MessageServiceImpl implements MessageService {
 		return message;
 	}
 	@Override
-	public Message getMessage(String messageCode,String[] para) {
+	public IMessage getMessage(String messageCode,String[] para) {
 		ProcessContext processContext = CurrentThread.getProcessContext();
 		Locale locale = processContext.getLocale();
 		if(locale==null){
@@ -134,17 +134,17 @@ public class MessageServiceImpl implements MessageService {
 	
 
 	@Override
-	public Message getMessage(MessageCode messageCode,String[] para) {
+	public IMessage getMessage(MessageCode messageCode,String[] para) {
 		return getMessage(messageCode.getCode(),para);
 	}
 
 	@Override
-	public Message getMessage(MessageCode messageCode, Locale locale,String[] para) {
+	public IMessage getMessage(MessageCode messageCode, Locale locale,String[] para) {
 		return getMessage(messageCode.getCode(),locale,para);
 	}
 
 	@Override
-	public Message getMessage(MessageCode messageCode, String lang,String[] para) {
+	public IMessage getMessage(MessageCode messageCode, String lang,String[] para) {
 		return getMessage(messageCode.getCode(),lang,para);
 	}
 
@@ -158,12 +158,12 @@ public class MessageServiceImpl implements MessageService {
 
 
 	@Override
-	public Map<String, Message> getMessageMap(String lang) {
-		List<Message> list;
+	public Map<String, IMessage> getMessageMap(String lang) {
+		List<IMessage> list;
 		list = getMessageList(lang);
-		HashMap<String, Message> map = new HashMap<String, Message>();
+		HashMap<String, IMessage> map = new HashMap<String, IMessage>();
 		if(list!=null){
-			for (Message message : list) {
+			for (IMessage message : list) {
 				map.put(message.getMessageCode(), message);
 			}
 		}

@@ -10,7 +10,7 @@ import java.util.Map;
 import org.springframework.transaction.TransactionStatus;
 
 import com.moomanow.core.common.bean.LocationBean;
-import com.moomanow.core.common.bean.Message;
+import com.moomanow.core.common.bean.IMessage;
 import com.moomanow.core.common.bean.MessageDefault;
 import com.moomanow.core.common.bean.UserBean;
 import com.moomanow.core.common.bean.UserBeanDefault;
@@ -24,7 +24,7 @@ public class ProcessContext {
 
 	protected UserBean userBean;
 	
-	protected List<Message> messageList;
+	protected List<IMessage> messageList;
 	
 	protected String lang;
 	protected Locale nativeLocale;
@@ -120,7 +120,7 @@ public class ProcessContext {
 	
 	public void addMessage(MessageCode messageCode){
 		if(messageList == null){
-			messageList = new LinkedList<Message>();
+			messageList = new LinkedList<IMessage>();
 		}
 		MessageDefault message  = new MessageDefault();
 		message.setMessageCode(messageCode);
@@ -129,7 +129,7 @@ public class ProcessContext {
 	
 	public void addMessage(String messageCode,String...param){
 		if(messageList == null){
-			messageList = new LinkedList<Message>();
+			messageList = new LinkedList<IMessage>();
 		}
 		MessageDefault message  = new MessageDefault();
 		message.setMessageCode(messageCode);
@@ -138,14 +138,14 @@ public class ProcessContext {
 	}
 	public void addMessage(MessageCode messageCode,String...param){
 		if(messageList == null){
-			messageList = new LinkedList<Message>();
+			messageList = new LinkedList<IMessage>();
 		}
 		MessageDefault message  = new MessageDefault();
 		message.setMessageCode(messageCode);
 		message.setPara(param);
 		messageList.add(message );
 	}
-	List<Message> getMessageList() {
+	List<IMessage> getMessageList() {
 		return messageList;
 	}
 	public void setLocale(Locale locale) {

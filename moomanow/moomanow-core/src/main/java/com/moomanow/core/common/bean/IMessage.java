@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.moomanow.core.common.constant.MessageCode;
 
-public interface Message extends Serializable {
+public interface IMessage extends Serializable {
 
 	
 	public String getMessageCode();

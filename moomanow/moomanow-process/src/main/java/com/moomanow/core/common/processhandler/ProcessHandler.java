@@ -38,22 +38,11 @@ public class ProcessHandler {
 	public void setMessageHandler(MessageHandler messageHandler) {
 		this.messageHandler = messageHandler;
 	}
-//	private final Gson gson = new GsonBuilder().create();
-//	private final Gson gson2 = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
-//		@Override
-//		public boolean shouldSkipField(FieldAttributes fa) {
-//			String text = "[\"username\",\"password\",\"email\"]";
-//			Type typeOfSrc = new TypeToken<Set<String>>() {}.getType();
-//			Set<String> setKey = gson.fromJson(text, typeOfSrc );
-//			return setKey!=null && setKey.contains(fa.getName()) ? false: true;
-////			return true;
-//		}
-//		@Override
-//		public boolean shouldSkipClass(Class<?> arg0) {
-//			return true;
-//		}
-//	}  ).create();
 	
+	private String processResultClass = "com.moomanow.core.common.processhandler.BangProcessResult";
+	public void setProcessResultClass(String processResultClass) {
+		this.processResultClass = processResultClass;
+	}
 	public Object doAspect(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
 		logger.info("[Service Start]\tcall:" +proceedingJoinPoint.getSignature().toShortString() );
 		
@@ -61,17 +50,10 @@ public class ProcessHandler {
 		MethodSignature methodSignature = (MethodSignature)proceedingJoinPoint.getSignature();
 		Method targetInterfaceMethod = methodSignature.getMethod();
 		
-//		if(logger2.isDebugEnabled()){
-//			Method method = methodSignature.getMethod();
-//			String paraType = Joiner.on(", ").join(method.getParameterTypes());
-//			String paraValue= Joiner.on(", ").skipNulls().join(proceedingJoinPoint.getArgs());
-//			logger2.debug("[Service debug] method Name: "+method.getDeclaringClass().getSimpleName()+"." + method.getName() + " Parameter Type:[" + Joiner.on(", ").join(method.getParameterTypes()).getClass().getSimpleName() + "] Parameter Value:[" + gson.toJson(proceedingJoinPoint.getArgs())+"]");
-//			logger2.debug("[Service debug] method Name: "+method.getDeclaringClass().getSimpleName()+"." + method.getName() + " Parameter :["+paraType+"] Value ["+paraValue+"]");
-//		}
 		
 		boolean fristProcess = false;
 		boolean isTxnProcess = false;
-		if(processContext!=null&&!processContext.startProcess&&ServiceResult.class.equals(targetInterfaceMethod.getReturnType())){
+		if(processContext!=null&&!processContext.startProcess&&IProcessResult.class.equals(targetInterfaceMethod.getReturnType())){
 			fristProcess = true;
 			processContext.startProcess = true;
 			
@@ -107,9 +89,9 @@ public class ProcessHandler {
 				logger2.error("[Service Error]\tcall:" + proceedingJoinPoint.getSignature().toShortString() + " : "+e.getMessage(), e);
 			}
 			processContext = onException(e, processContext, isTxnProcess);
-			if (fristProcess&&ServiceResult.class.equals(targetInterfaceMethod.getReturnType())) {
+			if (fristProcess&&IProcessResult.class.equals(targetInterfaceMethod.getReturnType())) {
 
-				ServiceResult<Object> serviceResult = new ServiceResult<Object>();
+				IProcessResult<Object> serviceResult = (IProcessResult<Object>) Class.forName(processResultClass).newInstance();
 
 				serviceResult.setStatus(CommonConstant.PROCESS_STATUS_FAIL);
 				processContext.status=CommonConstant.PROCESS_STATUS_FAIL;
@@ -153,9 +135,9 @@ public class ProcessHandler {
 //			transactionHandler.unProxy(returnValue, isTxnProcess);
 		}
 			
-		if(returnValue!=null &&returnValue instanceof ServiceResult ){
+		if(returnValue!=null &&returnValue instanceof IProcessResult ){
 			
-			returnValue = messageHandler.addMessage((ServiceResult) returnValue);
+			returnValue = messageHandler.addMessage((IProcessResult) returnValue);
 			
 		}
 		return returnValue;

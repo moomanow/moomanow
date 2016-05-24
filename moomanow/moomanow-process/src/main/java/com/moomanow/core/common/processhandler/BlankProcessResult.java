@@ -1,33 +1,39 @@
+/**
+ * 
+ */
 package com.moomanow.core.common.processhandler;
 
 import java.io.Serializable;
 import java.util.List;
 
-import com.moomanow.core.common.bean.Message;
 import com.moomanow.core.common.bean.PagingBean;
+import com.moomanow.core.common.bean.IMessage;
 import com.moomanow.core.common.constant.CommonConstant;
 
-public class ServiceResult<T extends Object> implements Serializable {
+/**
+ * @author Jaurpong.w(Kwan)
+ *
+ */
+public class BlankProcessResult<T extends Object> implements IProcessResult<T>,Serializable {
 
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 929748902731079814L;
+	private static final long serialVersionUID = -5062307198339604396L;
 	private T result;
 	private String status;
-	private List<Message> messages;
+	private List<IMessage> messages;
 	private PagingBean pagingBean;
 	
-	public ServiceResult(T t) {
+	public BlankProcessResult(T t) {
 		result = t;
 	}
-	public ServiceResult(T t,PagingBean pagingBean) {
+	public BlankProcessResult(T t,PagingBean pagingBean) {
 		this.pagingBean = pagingBean;
 		result = t;
 	}
 	
-	public ServiceResult() {
+	public BlankProcessResult() {
 	}
 	
 	public T getResult() {
@@ -46,15 +52,15 @@ public class ServiceResult<T extends Object> implements Serializable {
 		this.status = status;
 	}
 	
-	public List<Message> getMessages() {
+	public List<IMessage> getMessages() {
 		return messages;
 	}
 	
-	public Message getMessage(){
+	public IMessage getMessage(){
 		return (messages!=null &&messages.size()>=1)?messages.get(0):null;
 	}
 	
-	void setMessages(List<Message> messages) {
+	public void setMessages(List<IMessage> messages) {
 		this.messages = messages;
 	}
 	public PagingBean getPagingBean() {
@@ -63,4 +69,5 @@ public class ServiceResult<T extends Object> implements Serializable {
 	public void setPagingBean(PagingBean pagingBean) {
 		this.pagingBean = pagingBean;
 	}
+	
 }
