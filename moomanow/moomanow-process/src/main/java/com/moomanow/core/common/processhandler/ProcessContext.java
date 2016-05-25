@@ -100,7 +100,7 @@ public class ProcessContext {
 			HashSet<String> pri = new HashSet<String>();
 			pri.add("COM000000");
 			userBean.setPrivileges(pri);
-//			ServiceResult<List<MenuBean>> serviceResultMenu = userMenuService.generateMenuList(serviceResult.getResult());
+//			ProcessResult<List<MenuBean>> ProcessResultMenu = userMenuService.generateMenuList(ProcessResult.getResult());
 		}
 		return userBean;
 	}

@@ -91,14 +91,14 @@ public class ProcessHandler {
 			processContext = onException(e, processContext, isTxnProcess);
 			if (fristProcess&&IProcessResult.class.equals(targetInterfaceMethod.getReturnType())) {
 
-				IProcessResult<Object> serviceResult = (IProcessResult<Object>) Class.forName(processResultClass).newInstance();
+				IProcessResult<Object> ProcessResult = (IProcessResult<Object>) Class.forName(processResultClass).newInstance();
 
-				serviceResult.setStatus(CommonConstant.PROCESS_STATUS_FAIL);
+				ProcessResult.setStatus(CommonConstant.PROCESS_STATUS_FAIL);
 				processContext.status=CommonConstant.PROCESS_STATUS_FAIL;
 				if(e instanceof BaseException)
-					returnValue = messageHandler.addMessage(serviceResult, (BaseException)e);
+					returnValue = messageHandler.addMessage(ProcessResult, (BaseException)e);
 				else
-					returnValue = messageHandler.addMessage(serviceResult,new RollBackTechnicalException(CommonMessageCode.COM4999, e));
+					returnValue = messageHandler.addMessage(ProcessResult,new RollBackTechnicalException(CommonMessageCode.COM4999, e));
 			} else {
 				throw e;
 			}

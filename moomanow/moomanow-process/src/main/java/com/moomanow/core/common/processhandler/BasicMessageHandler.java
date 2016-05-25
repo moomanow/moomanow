@@ -21,7 +21,7 @@ public class BasicMessageHandler implements MessageHandler {
 		this.messageService = messageService;
 	}
 	@Override
-	public <T> IProcessResult<T> addMessage(IProcessResult<T> serviceResult) {
+	public <T> IProcessResult<T> addMessage(IProcessResult<T> ProcessResult) {
 		ProcessContext processContext = CurrentThread.getProcessContext();
 		List<IMessage> messageOutList = new LinkedList<IMessage>();
 		List<IMessage> messageList = processContext.messageList;
@@ -31,28 +31,28 @@ public class BasicMessageHandler implements MessageHandler {
 				if(messageOut!=null)
 				messageOutList.add(messageOut);
 			}
-			serviceResult.setMessages(messageOutList);
+			ProcessResult.setMessages(messageOutList);
 		}
 		if(processContext.status==null||"".equals(processContext.status)){
-			serviceResult.setStatus(CommonConstant.PROCESS_STATUS_SUCCESS);
+			ProcessResult.setStatus(CommonConstant.PROCESS_STATUS_SUCCESS);
 		}else{
-			serviceResult.setStatus(processContext.status);
+			ProcessResult.setStatus(processContext.status);
 		}
 		
-		return serviceResult;
+		return ProcessResult;
 	}
 
 
 	@Override
-	public <T> IProcessResult<T> addMessage(IProcessResult<T> serviceResult,BaseException baseException){
+	public <T> IProcessResult<T> addMessage(IProcessResult<T> ProcessResult,BaseException baseException){
 		List<IMessage> messageOutList = new LinkedList<IMessage>();
 		if(baseException!=null&&baseException.getMessageCode()!=null){
 				IMessage messageOut = messageService.getMessage(baseException.getMessageCode().getCode(),new String[]{});
 				if(messageOut!=null)
 				messageOutList.add(messageOut);
-			serviceResult.setMessages(messageOutList);
+			ProcessResult.setMessages(messageOutList);
 		}
 		
-		return serviceResult;
+		return ProcessResult;
 	}
 }

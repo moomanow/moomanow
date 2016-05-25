@@ -104,11 +104,11 @@ public class BasicTransactionHandler  implements TransactionHandler{
 	
 	@Override
 	public  <T> T unProxy(T returnValue, boolean isTxnProcess){
-//		if(returnValue!=null &&returnValue instanceof ServiceResult){
+//		if(returnValue!=null &&returnValue instanceof ProcessResult){
 //			
 //			if(isTxnProcess){
-//				ServiceResult serviceResult = (ServiceResult) returnValue;
-//				serviceResult.setResult(HibernateUtil.clearUnproxy(serviceResult.getResult()));
+//				ProcessResult ProcessResult = (ProcessResult) returnValue;
+//				ProcessResult.setResult(HibernateUtil.clearUnproxy(ProcessResult.getResult()));
 //			}
 //			
 //		}else{
