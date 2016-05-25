@@ -1,36 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.moomanow</groupId>
-		<artifactId>moomanow</artifactId>
-		<version>0.0.3</version>
-		<relativePath>..</relativePath>
-	</parent>
-	<artifactId>moomanow-process</artifactId>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>1.8.9</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>com.moomanow</groupId>
-			<artifactId>moomanow-core</artifactId>
-		</dependency>
-	</dependencies>
-	
-	  <build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.moomanow</groupId>
+    <artifactId>moomanow</artifactId>
+    <version>0.0.3</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <artifactId>moomanow-oauth2</artifactId>
+  
+  <build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -71,4 +49,19 @@
 			</plugin>
 		</plugins>
 	</build>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.mitre</groupId>
+  		<artifactId>openid-connect-client</artifactId>
+  	</dependency>
+  </dependencies>
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>org.mitre</groupId>
+  			<artifactId>openid-connect-client</artifactId>
+  			<version>1.2.6</version>
+  		</dependency>
+  	</dependencies>
+  </dependencyManagement>
 </project>

@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.moomanow</groupId>
     <artifactId>moomanow</artifactId>
-    <version>${project.version}</version>
+    <version>0.0.3</version>
   </parent>
   <artifactId>moomanow-struts2-ui</artifactId>
   <build>
