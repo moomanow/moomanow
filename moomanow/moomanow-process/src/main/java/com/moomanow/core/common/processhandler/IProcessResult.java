@@ -25,7 +25,7 @@ public interface IProcessResult<T extends Object> {
 	public String getStatus();
 	public void setStatus(String status);
 	
-	public List<IMessage> getMessages();
+	public List<? extends IMessage> getMessages();
 	
 	public IMessage getMessage();
 	

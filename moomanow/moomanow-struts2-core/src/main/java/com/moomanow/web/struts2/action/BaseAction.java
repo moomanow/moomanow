@@ -37,7 +37,7 @@ public abstract class BaseAction extends ActionSupport implements RequestAware,S
 	protected HttpServletResponse httpServletResponse;
 	protected Map<String, Object> session;
 	protected Map<String, Object> request;
-	protected List<IMessage> messageList;
+	protected List<? extends IMessage> messageList;
 	protected List<Button> buttonList;
 	protected Map<String, String> label;
 	protected IJSONResult<Object> results;
