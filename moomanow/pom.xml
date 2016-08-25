@@ -29,12 +29,13 @@
 		<module>moomanow-struts2-ui</module>
 		
 		<module>moomanow-oauth2</module>
-		<module>moomanow-logger</module>
-		<module>moomanow-logger-log4j</module>
-		<module>moomanow-logger-log4j2</module>
-		<module>moomanow-logger-jbosslog</module>
-		<module>moomanow-logger-slf4</module>
 		
+		
+		
+		
+		
+
+		<module>moomanow-logger-dmc</module>
 	</modules>
 
 	<scm>
