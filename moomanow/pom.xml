@@ -485,11 +485,6 @@
 			</dependency>
 			<dependency>
 				<groupId>com.moomanow</groupId>
-				<artifactId>moomanow-dao</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.moomanow</groupId>
 				<artifactId>moomanow-oauth2</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -511,6 +506,31 @@
 			<dependency>
 				<groupId>com.moomanow</groupId>
 				<artifactId>moomanow-struts2-ui</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow</groupId>
+				<artifactId>moomanow-logger</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow</groupId>
+				<artifactId>moomanow-logger-log4j2</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow</groupId>
+				<artifactId>moomanow-logger-jbosslog</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow</groupId>
+				<artifactId>moomanow-logger-log4j</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow</groupId>
+				<artifactId>moomanow-logger-slf4</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>

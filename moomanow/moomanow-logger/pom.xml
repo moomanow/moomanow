@@ -4,6 +4,7 @@
     <groupId>com.moomanow</groupId>
     <artifactId>moomanow</artifactId>
     <version>0.0.4</version>
+    <relativePath>..</relativePath>
   </parent>
   <artifactId>moomanow-logger</artifactId>
   
