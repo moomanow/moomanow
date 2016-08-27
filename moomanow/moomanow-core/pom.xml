@@ -3,8 +3,8 @@
   <parent>
     <groupId>com.moomanow</groupId>
     <artifactId>moomanow</artifactId>
-    <version>0.0.4</version>
     <relativePath>..</relativePath>
+    <version>0.0.5</version>
   </parent>
   <artifactId>moomanow-core</artifactId>
   <dependencies>
