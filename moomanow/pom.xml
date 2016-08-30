@@ -37,6 +37,7 @@
 
 		
 		<module>moomanow-logger</module>
+		<module>moomanow-langbean</module>
 	</modules>
 
 	<scm>
