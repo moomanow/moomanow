@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import com.moomanow.proxylang.FactoryProxyLang;
+import com.moomanow.proxylang.ProxyLangService;
 
 public class Test {
 
@@ -29,13 +30,19 @@ public class Test {
 	public void test() {
 
 
-		Kwan kwan = new Kwan();
+		Kwan kwanEng = new Kwan();
+		kwanEng.setName("Jarupong");
+		Kwan kwanTha = FactoryProxyLang.proxyBean(new ProxyLangService() {
+			
+			@Override
+			public <T> T modifyObjetLang(T object, String lang) {
+				// TODO Auto-generated method stub
+//				object.
+				return null;
+			}
+		} ,kwanEng,"THA");
 		
-		kwan = FactoryProxyLang.proxyBean(kwan);
-		kwan.setName("Jarupong");
-		assertEquals("Jarupong", kwan.getName());
-		FactoryProxyLang.proxyBeanLang(kwan, "THA");
-		assertEquals(null, kwan.getName());
+		assertEquals("JAR", kwanTha.getName());
 
 //		fail("Not yet implemented");
 	}
