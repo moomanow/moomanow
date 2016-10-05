@@ -24,6 +24,10 @@
   		<groupId>org.apache.struts</groupId>
   		<artifactId>struts2-rest-plugin</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>com.moomanow</groupId>
+  		<artifactId>moomanow-core</artifactId>
+  	</dependency>
   </dependencies>
   
     <build>

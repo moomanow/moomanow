@@ -3,7 +3,6 @@ package com.moomanow.core.common.bean;
 
 import java.util.List;
 
-import com.moomanow.web.struts2.bean.IMessage;
 
 public interface IJSONResult<T>  {
 

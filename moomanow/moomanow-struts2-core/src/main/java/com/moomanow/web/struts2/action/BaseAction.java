@@ -19,8 +19,8 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.BeanNameAware;
 
 import com.moomanow.core.common.bean.IJSONResult;
+import com.moomanow.core.common.bean.IMessage;
 import com.moomanow.web.struts2.bean.Button;
-import com.moomanow.web.struts2.bean.IMessage;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.interceptor.ValidationWorkflowAware;
