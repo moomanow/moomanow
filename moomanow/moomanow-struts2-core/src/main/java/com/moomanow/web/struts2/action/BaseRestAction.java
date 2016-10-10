@@ -61,9 +61,6 @@ public abstract class BaseRestAction extends RestActionSupport implements Reques
 	
 	protected PrincipalProxy principalProxy;
 	
-	public abstract String init()throws Exception;
-	
-	
 	@Override
 	public void setServletRequest(HttpServletRequest arg0) {
 		httpServletRequest =arg0;
