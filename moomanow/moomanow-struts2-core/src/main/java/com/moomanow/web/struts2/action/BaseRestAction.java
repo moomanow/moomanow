@@ -42,13 +42,11 @@ public abstract class BaseRestAction extends RestActionSupport implements Reques
 	protected HttpServletResponse httpServletResponse;
 	protected Map<String, Object> session;
 	protected Map<String, Object> request;
-	protected List<? extends IMessage> messageList;
+	protected List<IMessage> messageList;
 	protected List<Button> buttonList;
-	protected Map<String, String> label;
-	protected IJSONResult<Object> results;
 	protected String nextUrl;
 	protected String backUrl;
-	protected String nextNamespace; 
+	protected String nextNamespace;
 	protected String nextAction;
 	protected String dynamicParameterValue;
 	protected String dynamicParameterName;
@@ -93,70 +91,45 @@ public abstract class BaseRestAction extends RestActionSupport implements Reques
 		principalProxy = arg0;
 	}
 	
-	
-	public void clearSessionValue(){
-		HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get("com.opensymphony.xwork2.dispatcher.HttpServletRequest");
-		for (Enumeration<String> e = request.getSession().getAttributeNames();e.hasMoreElements();) {
-			String key = e.nextElement();
-			if(key.indexOf("class")>=0){
-				request.getSession().removeAttribute(key);
-			}
-		}
+	@Override
+	public String getInputResultName() {
+		return inputResultName;
 	}
 	
-	public String start()throws Exception{
-		return ActionSupport.SUCCESS;
+	public void setInputResultName(String inputResultName) {
+		this.inputResultName = inputResultName;
 	}
-	
-	
-	public String end() throws Exception{
-		clearSessionValue();
-		return ActionSupport.SUCCESS;
-	}
-	
-
 
 	public String getNextUrl() {
 		return nextUrl;
 	}
 
-
 	public void setNextUrl(String nextUrl) {
 		this.nextUrl = nextUrl;
 	}
-
 
 	public String getBackUrl() {
 		return backUrl;
 	}
 
-
 	public void setBackUrl(String backUrl) {
 		this.backUrl = backUrl;
 	}
-	
-	
+
 	public String getNextAction() {
 		return nextAction;
 	}
+
 	public void setNextAction(String nextAction) {
 		this.nextAction = nextAction;
 	}
+
 	public String getNextNamespace() {
 		return nextNamespace;
 	}
+
 	public void setNextNamespace(String nextNamespace) {
 		this.nextNamespace = nextNamespace;
-	}
-
-
-	public String getInputResultName() {
-		return inputResultName;
-	}
-
-
-	public void setInputResultName(String inputResultName) {
-		this.inputResultName = inputResultName;
 	}
 
 
@@ -164,21 +137,18 @@ public abstract class BaseRestAction extends RestActionSupport implements Reques
 		return dynamicParameterValue;
 	}
 
-
 	public void setDynamicParameterValue(String dynamicParameterValue) {
 		this.dynamicParameterValue = dynamicParameterValue;
 	}
-
 
 	public String getDynamicParameterName() {
 		return dynamicParameterName;
 	}
 
-
 	public void setDynamicParameterName(String dynamicParameterName) {
 		this.dynamicParameterName = dynamicParameterName;
 	}
-	
+
 	public String getAction() {
 		return action;
 	}
@@ -194,7 +164,29 @@ public abstract class BaseRestAction extends RestActionSupport implements Reques
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
-	
 
+	public void setMessageList(List<IMessage> messageList) {
+
+		this.messageList = messageList;
+
+	}
+
+	public List<IMessage> getMessageList() {
+
+		return messageList;
+
+	}
+
+	public IMessage getMessage() {
+
+		return (messageList == null || messageList.size() <= 0 ? null : messageList.get(messageList.size() - 1));
+
+	}
 	
+	public void setButtonList(List<Button> buttonList) {
+		this.buttonList = buttonList;
+	}
+	public List<Button> getButtonList() {
+		return buttonList;
+	}
 }

@@ -29,154 +29,144 @@ import com.opensymphony.xwork2.interceptor.ValidationWorkflowAware;
  * @author Jaurpong.w(Kwan)
  *
  */
-public abstract class BaseAction extends ActionSupport implements RequestAware,SessionAware,ServletRequestAware,ServletResponseAware,PrincipalAware,BeanNameAware,ValidationWorkflowAware {
+public abstract class BaseAction extends ActionSupport implements RequestAware, SessionAware, ServletRequestAware,
+		ServletResponseAware, PrincipalAware, BeanNameAware, ValidationWorkflowAware {
 
-	
 	protected static final String MESSAGE = "message";
 	protected HttpServletRequest httpServletRequest;
 	protected HttpServletResponse httpServletResponse;
 	protected Map<String, Object> session;
 	protected Map<String, Object> request;
-	protected List<? extends IMessage> messageList;
+	protected List<IMessage> messageList;
 	protected List<Button> buttonList;
 	protected Map<String, String> label;
 	protected IJSONResult<Object> results;
 	protected String nextUrl;
 	protected String backUrl;
-	protected String nextNamespace; 
+	protected String nextNamespace;
 	protected String nextAction;
 	protected String dynamicParameterValue;
 	protected String dynamicParameterName;
 	protected String inputResultName;
 	protected String action;
 	protected String namespace;
-	
-	
+
 	protected String beanName;
-	
+
 	protected PrincipalProxy principalProxy;
-	
-	public abstract String init()throws Exception;
-	
-	
+
+	public abstract String init() throws Exception;
+
 	@Override
 	public void setServletRequest(HttpServletRequest arg0) {
-		httpServletRequest =arg0;
+		httpServletRequest = arg0;
 	}
+
 	@Override
 	public void setRequest(Map<String, Object> request) {
 		this.request = request;
 	}
+
 	@Override
 	public void setSession(Map<String, Object> arg0) {
 		this.session = arg0;
 	}
+
 	@Override
 	public void setServletResponse(HttpServletResponse arg0) {
 		httpServletResponse = arg0;
 	}
-	
+
 	@Override
 	public void setBeanName(String arg0) {
 		beanName = arg0;
 	}
 
-	public String getActionName(){
+	public String getActionName() {
 		return beanName.replaceAll("Action", "");
 	}
-	
-	
+
 	@Override
 	public void setPrincipalProxy(PrincipalProxy arg0) {
 		principalProxy = arg0;
 	}
-	
-	
-	public void clearSessionValue(){
-		HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get("com.opensymphony.xwork2.dispatcher.HttpServletRequest");
-		for (Enumeration<String> e = request.getSession().getAttributeNames();e.hasMoreElements();) {
+
+	public void clearSessionValue() {
+		HttpServletRequest request = (HttpServletRequest) ActionContext.getContext()
+				.get("com.opensymphony.xwork2.dispatcher.HttpServletRequest");
+		for (Enumeration<String> e = request.getSession().getAttributeNames(); e.hasMoreElements();) {
 			String key = e.nextElement();
-			if(key.indexOf("class")>=0){
+			if (key.indexOf("class") >= 0) {
 				request.getSession().removeAttribute(key);
 			}
 		}
 	}
-	
-	public String start()throws Exception{
+
+	public String start() throws Exception {
 		return ActionSupport.SUCCESS;
 	}
-	
-	
-	public String end() throws Exception{
+
+	public String end() throws Exception {
 		clearSessionValue();
 		return ActionSupport.SUCCESS;
 	}
-	
-
 
 	public String getNextUrl() {
 		return nextUrl;
 	}
 
-
 	public void setNextUrl(String nextUrl) {
 		this.nextUrl = nextUrl;
 	}
-
 
 	public String getBackUrl() {
 		return backUrl;
 	}
 
-
 	public void setBackUrl(String backUrl) {
 		this.backUrl = backUrl;
 	}
-	
-	
+
 	public String getNextAction() {
 		return nextAction;
 	}
+
 	public void setNextAction(String nextAction) {
 		this.nextAction = nextAction;
 	}
+
 	public String getNextNamespace() {
 		return nextNamespace;
 	}
+
 	public void setNextNamespace(String nextNamespace) {
 		this.nextNamespace = nextNamespace;
 	}
-
 
 	public String getInputResultName() {
 		return inputResultName;
 	}
 
-
 	public void setInputResultName(String inputResultName) {
 		this.inputResultName = inputResultName;
 	}
-
 
 	public String getDynamicParameterValue() {
 		return dynamicParameterValue;
 	}
 
-
 	public void setDynamicParameterValue(String dynamicParameterValue) {
 		this.dynamicParameterValue = dynamicParameterValue;
 	}
-
 
 	public String getDynamicParameterName() {
 		return dynamicParameterName;
 	}
 
-
 	public void setDynamicParameterName(String dynamicParameterName) {
 		this.dynamicParameterName = dynamicParameterName;
 	}
-	
+
 	public String getAction() {
 		return action;
 	}
@@ -192,7 +182,30 @@ public abstract class BaseAction extends ActionSupport implements RequestAware,S
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
-	
 
+	public void setMessageList(List<IMessage> messageList) {
+
+		this.messageList = messageList;
+
+	}
+
+	public List<IMessage> getMessageList() {
+
+		return messageList;
+
+	}
+
+	public IMessage getMessage() {
+
+		return (messageList == null || messageList.size() <= 0 ? null : messageList.get(messageList.size() - 1));
+
+	}
 	
+	public void setButtonList(List<Button> buttonList) {
+		this.buttonList = buttonList;
+	}
+	public List<Button> getButtonList() {
+		return buttonList;
+	}
+
 }
