@@ -215,7 +215,6 @@ public class JPAUtil {
 						classMapper.setPropertyId(property);
 					}
 				}
-
 			}else if(joinColumns!=null){
 				Property joinColumnsProperty = new Property();
 				joinColumnsProperty.setMethodGet(methodGet);
@@ -364,6 +363,54 @@ public class JPAUtil {
 //				classMapper.getColumn().put(field.getName(), property);
 //				property.setColumnType(ColumnType.embeddedId);
 //				classMapper.setPropertyId(property);
+			}
+			if(column==null&&joinColumn==null&&joinColumns==null&&field!=null){
+				String name =field.getName();
+				if (!classMapper.getColumn().containsKey(name)) {
+					Property property = new Property();
+					property.setMethodGet(methodGet);
+					property.setMethodSet(methodSet);
+					property.setColumnName(name);
+					property.setColumnType(ColumnType.column);
+//					classMapper.getColumn().put(column.name(), property);//Old version
+					List<Property> properties = classMapper.getColumn().get(name);
+					if(properties==null)
+						properties = new ArrayList<Property>();
+					properties.add(property);
+					classMapper.getColumn().put(name, properties);
+					if(enumerated!=null)
+						property.setEnumType(enumerated.value());
+					if(id!=null){
+						property.setColumnType(ColumnType.id);
+						classMapper.setPropertyId(property);
+					}else if(embeddedId!=null){
+						property.setColumnType(ColumnType.embeddedId);
+						classMapper.setPropertyId(property);
+					}
+				}
+				name =field.getName().toUpperCase();
+				if (!classMapper.getColumn().containsKey(name)) {
+					Property property = new Property();
+					property.setMethodGet(methodGet);
+					property.setMethodSet(methodSet);
+					property.setColumnName(name);
+					property.setColumnType(ColumnType.column);
+//					classMapper.getColumn().put(column.name(), property);//Old version
+					List<Property> properties = classMapper.getColumn().get(name);
+					if(properties==null)
+						properties = new ArrayList<Property>();
+					properties.add(property);
+					classMapper.getColumn().put(name, properties);
+					if(enumerated!=null)
+						property.setEnumType(enumerated.value());
+					if(id!=null){
+						property.setColumnType(ColumnType.id);
+						classMapper.setPropertyId(property);
+					}else if(embeddedId!=null){
+						property.setColumnType(ColumnType.embeddedId);
+						classMapper.setPropertyId(property);
+					}
+				}
 			}
 			
 			if(oneToMany!=null){
