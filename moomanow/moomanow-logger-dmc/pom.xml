@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.moomanow</groupId>
 		<artifactId>moomanow</artifactId>
-		<version>0.0.5</version>
+		<version>0.0.6</version>
 	</parent>
 	<artifactId>moomanow-logger-dmc</artifactId>
 
