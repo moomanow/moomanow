@@ -1,6 +1,5 @@
 package com.moomanow.core.common.dao;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import com.moomanow.core.common.bean.MessageDefault;
 import com.moomanow.core.common.exception.NonRollBackException;
 import com.moomanow.core.common.exception.RollBackException;
 
-public class MessageDaoImpl extends CommonJdbcDaoImpl implements MessageDao {
+public class MessageDaoImpl extends JdbcCommonDaoImpl implements MessageDao {
 	
 	private static final Logger logger = Logger.getLogger(MessageDaoImpl.class);
 	public static final String SQL_QUERY_MESSAGE = 

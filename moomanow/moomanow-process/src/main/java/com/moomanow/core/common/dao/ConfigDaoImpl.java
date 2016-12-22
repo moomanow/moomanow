@@ -3,12 +3,8 @@ package com.moomanow.core.common.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
@@ -26,7 +22,7 @@ import com.moomanow.core.common.bean.MessageDefault;
 import com.moomanow.core.common.exception.NonRollBackException;
 import com.moomanow.core.common.exception.RollBackException;
 
-public class ConfigDaoImpl extends CommonJdbcDaoImpl implements ConfigDao {
+public class ConfigDaoImpl extends JdbcCommonDaoImpl implements ConfigDao {
 	
 	private static final Logger logger = Logger.getLogger(ConfigDaoImpl.class);
 	
