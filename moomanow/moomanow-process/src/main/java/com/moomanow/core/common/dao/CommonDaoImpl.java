@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.moomanow.core.common.bean.Criteria;
 import com.moomanow.core.common.bean.PagingBean;
@@ -18,6 +19,7 @@ import com.moomanow.core.common.constant.CommonMessageCode;
 import com.moomanow.core.common.exception.RollBackException;
 import com.moomanow.core.common.exception.RollBackTechnicalException;
 
+@Transactional
 public class CommonDaoImpl implements CommonDao {
 	/**
 	 * Logger for this class
