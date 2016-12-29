@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.moomanow.core.common.bean.Criteria;
 import com.moomanow.core.common.bean.EntityBean;
@@ -14,6 +15,7 @@ import com.moomanow.core.common.bean.PagingBean;
 import com.moomanow.core.common.exception.NonRollBackException;
 import com.moomanow.core.common.exception.RollBackException;
 
+@Transactional
 public interface JdbcCommonDao {
 	
 	public <T extends Object> T nativeQueryOneRow(String sql, RowMapper<T> rm, Map<String, Object> params)throws RollBackException, NonRollBackException;

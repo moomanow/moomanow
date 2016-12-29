@@ -2,10 +2,13 @@ package com.moomanow.core.common.dao;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.moomanow.core.common.bean.Criteria;
 import com.moomanow.core.common.bean.PagingBean;
 import com.moomanow.core.common.exception.RollBackException;
 
+@Transactional
 public interface CommonDao {
 
 
