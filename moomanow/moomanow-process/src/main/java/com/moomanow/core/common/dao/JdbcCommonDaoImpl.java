@@ -1,5 +1,6 @@
 package com.moomanow.core.common.dao;
 
+import java.beans.IntrospectionException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,6 +21,7 @@ import java.util.Map.Entry;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.apache.log4j.Logger;
@@ -39,6 +41,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Joiner;
+import com.moomanow.core.common.bean.BeanLang;
 import com.moomanow.core.common.bean.ClassMapper;
 import com.moomanow.core.common.bean.ColumnType;
 import com.moomanow.core.common.bean.Criteria;
@@ -64,16 +67,16 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 	 */
 	private static final Logger logger = Logger.getLogger(JdbcCommonDaoImpl.class);
 
-	
-//	protected SimpleJdbcTemplate simpleJdbcTemplate;
-//	@Required
-//	@Autowired
-//	public void setSimpleJdbcTemplate(SimpleJdbcTemplate simpleJdbcTemplate) {
-//		this.simpleJdbcTemplate = simpleJdbcTemplate;
-//	}
+	// protected SimpleJdbcTemplate simpleJdbcTemplate;
+	// @Required
+	// @Autowired
+	// public void setSimpleJdbcTemplate(SimpleJdbcTemplate simpleJdbcTemplate)
+	// {
+	// this.simpleJdbcTemplate = simpleJdbcTemplate;
+	// }
 	
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	protected JdbcTemplate jdbcTemplate;
 	
 	@Autowired
 	protected  NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -385,7 +388,7 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 	@Override
 	public <T extends Object>  List<T> nativeQuery(String sql, PagingBean pagingBean, RowMapper<T> rm, Object... params)throws RollBackException, NonRollBackException {
 //		String countQuery = "Select count(*) from ("+sql+") data";
-		String[] str = sql.toUpperCase().split("FROM");
+		String[] str = sql.split(" FROM ");
 		String countQuery = str.length == 2 ? "SELECT count(1) FROM (SELECT (1) FROM "+str[1]+") a" : "Select count(*) from ("+sql+") data";
 		
 		Long totalRows = nativeQueryOneRowForObject(countQuery,Long.class, params);
@@ -423,7 +426,7 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 	@Override
 	public <T extends Object> List<T> nativeQuery(String sql, PagingBean pagingBean, RowMapper<T> rm, Map<String, Object> params) throws RollBackException, NonRollBackException {
 //		String countQuery = "Select count(*) from ("+sql+") data";
-		String[] str = sql.toUpperCase().split("FROM");
+		String[] str = sql.split(" FROM ");
 		String countQuery = str.length == 2 ? "SELECT count(1) FROM (SELECT (1) FROM "+str[1]+") a" : "Select count(*) from ("+sql+") data";
 		
 		Long totalRows = nativeQueryOneRowForObject(countQuery,Long.class,params);
@@ -458,7 +461,7 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 	@Override
 	public <T extends Object> List<T> nativeQuery(String sql, PagingBean pagingBean, RowMapper<T> rm) throws RollBackException, NonRollBackException {
 //		String countQuery = "Select count(*) from ("+sql+") data";
-		String[] str = sql.toUpperCase().split("FROM");
+		String[] str = sql.split(" FROM ");
 		String countQuery = str.length == 2 ? "SELECT count(1) FROM (SELECT (1) FROM "+str[1]+") a" : "Select count(*) from ("+sql+") data";
 		
 		Long totalRows = nativeQueryOneRowForObject(countQuery,Long.class);
@@ -494,6 +497,26 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 			throw new RollBackTechnicalException(CommonMessageCode.COM4991);
 		}
 		return resultList;
+	}
+//	@Override
+//	public <T extends Object> T save(T target) throws RollBackException, NonRollBackException {
+//		return save(target, true, false,null);
+//	}
+	
+	@Override
+	public <T extends Object> T save(T target) throws RollBackException, NonRollBackException {
+		return save(target, false,null);
+	}
+	
+	@Override
+	public <T extends Object> T save(T target, boolean tableLang, String langCode) throws RollBackException, NonRollBackException {
+		Class<? extends Object> clazz = target.getClass();
+		ClassMapper classMapper =JPAUtil.getClassMapper(clazz);
+		Method methodSetId = classMapper.getPropertyId().getMethodSet();
+		Method methodGetId = classMapper.getPropertyId().getMethodGet();
+		KeyHolder keyHolder = saveKeyHolder(target, tableLang, langCode);
+		target = idToBean(keyHolder,target,methodSetId, methodGetId);
+ 		return target;
 	}
 	
 	public KeyHolder saveKeyHolder(Object target, boolean tableLang, String langCode) throws RollBackException, NonRollBackException {
@@ -740,7 +763,233 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 		}
 		return target;
 	}
+//	@Override
+//	public <T extends Object> T saveOrUpdate(T t) throws RollBackException, NonRollBackException {
+//		return saveOrUpdate(t,false,null,null);
+//	}
+	@Override
+	public <T extends Object> T saveOrUpdate(T t) throws RollBackException, NonRollBackException {
+		return saveOrUpdate(t,false,null,null);
+	}
+	@Override
+	public <T extends Object> T saveOrUpdate(T target, boolean tableLang,String code,Long idLang) throws RollBackException, NonRollBackException {
+		ClassMapper classMapper =JPAUtil.getClassMapper(target.getClass());
+		Object objectId = null;
+		try {
+			objectId = classMapper.getPropertyId().getMethodGet().invoke(target);
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			
+		}
+		if(objectId!=null){
+			try{
+			return update(target,tableLang,code,idLang);
+			} catch (Exception e){
+//				logger.error("saveOrUpdate message ", e);
+				return save(target,tableLang ,code);
+			}
+			
+		}
+		else{
+			return save(target,tableLang ,code);
+		}
+	}
+//	public <T extends Object> T update(T t) throws RollBackException, NonRollBackException {
+//		return t;
+//	}
+//	@Override
+//	public <T extends Object> T update(T target) throws RollBackException, NonRollBackException{
+//		return update(target, true,false,null,null);
+//	}
 	
+	@Override
+	public <T extends Object> T update(T target) throws RollBackException, NonRollBackException{
+		return update(target,false,null,null);
+	}
+	@Override
+	public <T extends Object> T update(T target, boolean tableLang, String langCode,Long idLang) throws RollBackException, NonRollBackException{
+		if(target instanceof EntityBean){
+			ProcessContext processContext = CurrentThread.getProcessContext();
+			EntityBean entityBean = (EntityBean) target;
+			entityBean.setUpdateDate(new Date());
+			entityBean.setUpdateUser(processContext.getUserName());
+		}
+		int i=0;
+		Class<? extends Object> clazz = target.getClass();
+		ClassMapper classMapper =JPAUtil.getClassMapper(clazz);
+		StringBuilder sb = new StringBuilder();
+		Table table = clazz.getAnnotation(Table.class);
+		List<Criteria> setList = new LinkedList<Criteria>();
+		List<Criteria> pkParaList = new LinkedList<Criteria>();
+		Map<String, Object> para = new HashMap<String, Object>();
+		
+		sb.append(" UPDATE ");
+		if(langCode != null && !langCode.equals("")){
+			setList.add(new Criteria("LANG_CODE3",(Object)langCode,"LANG_CODE3"+i++));
+		}
+		for (String  columnName : classMapper.getColumn().keySet()) {
+			for(Property property : classMapper.getColumn().get(columnName)){
+				Method method = property.getMethodGet();
+				try {
+//					checkColumnNameInTableLang
+					if(!tableLang||(tableLang && checkService.checkColumnNameInTableLang(table.name(), columnName))){
+						if(property.getColumnType() == ColumnType.joinColumns){
+							Object joinColumnsObject = property.getJoinColumns().getMethodGet().invoke(target);
+							if(joinColumnsObject!=null){
+								if(property.getEmbeddedId()!=null)
+									joinColumnsObject = property.getEmbeddedId().getMethodGet().invoke(joinColumnsObject);
+								Object value = property.getMethodGet().invoke(joinColumnsObject);
+
+								if(value != null){
+									//pregen
+									if(value instanceof Number){
+										if(((Number)value).intValue() ==-1){
+											if(checkService.checkIncludeMinusOne(table.name(),columnName)){
+												setList.add(new Criteria(columnName,value,columnName+i++));
+											}else{
+												setList.add(new Criteria(columnName,(Object)null,columnName+i++));
+											}
+										}else{
+											setList.add(new Criteria(columnName,value,columnName+i++));
+										}
+									}else if(value instanceof Date){
+										if(((Date) value).getTime() == 0L){
+											setList.add(new Criteria(columnName,(Object)null,columnName+i++));
+										}else{
+											setList.add(new Criteria(columnName,value,columnName+i++));
+										}
+									}else{
+										setList.add(new Criteria(columnName,value,columnName+i++));
+									}
+									//pregen
+								}
+							}
+							
+						}
+						if(property.getColumnType() == ColumnType.joinColumn||property.getColumnType() == ColumnType.column){
+							Object value = method.invoke(target);
+							if(value == null)
+								continue;
+							Entity entity = method.getReturnType().getAnnotation(Entity.class);
+							if(entity!=null){
+								ClassMapper classMapperId = JPAUtil.getClassMapper(method.getReturnType());
+								value = classMapperId.getPropertyId().getMethodGet().invoke(value);
+							}
+							if(value != null){
+								//pregen
+								if(value instanceof Number){
+									if(((Number)value).intValue() ==-1){
+										if(checkService.checkIncludeMinusOne(table.name(),columnName)){
+											setList.add(new Criteria(columnName,value,columnName+i++));
+										}else if (checkService.checkClearableList(table.name(),columnName)){
+											setList.add(new Criteria(columnName,(Object)null,columnName+i++));
+										}
+									}else{
+										setList.add(new Criteria(columnName,value,columnName+i++));
+									}
+								}else if(value instanceof Date){
+									if(((Date) value).getTime() == 0L){
+										setList.add(new Criteria(columnName,(Object)null,columnName+i++));
+									}else{
+										setList.add(new Criteria(columnName,value,columnName+i++));
+									}
+								}else{
+									setList.add(new Criteria(columnName,value,columnName+i++));
+								}
+								//pregen
+							}
+						}
+					}//case checkColumnNameInTableLang
+					
+					if(property.getColumnType() == ColumnType.id){
+						Object value = method.invoke(target);
+						if(value != null){
+							if(tableLang){
+								pkParaList.add(new Criteria(columnName+"_LANG",idLang,columnName+"_LANG"+i++));
+							}else{
+								pkParaList.add(new Criteria(columnName,value,columnName+i++));
+							}
+						}
+					}
+					
+					if(property.getColumnType() == ColumnType.embeddedId){
+						Object embeddedIdObject = property.getEmbeddedId().getMethodGet().invoke(target);
+						if(embeddedIdObject!=null){
+							Object valueEmbeddedId = method.invoke(embeddedIdObject);
+							if(valueEmbeddedId!=null){
+								if(tableLang&&(columnName+"_LANG").equals(checkService.getPkTableLangByTableName(table.name()))){
+									pkParaList.add(new Criteria(columnName+"_LANG",idLang,columnName+"_LANG"+i++));
+								}else{
+									pkParaList.add(new Criteria(columnName,valueEmbeddedId,columnName+i++));
+								}
+								
+							}
+						}
+					}
+					
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					logger.error("update(T, boolean)", e); //$NON-NLS-1$
+				}
+			}
+		}
+		if(tableLang){
+			pkParaList.add(new Criteria("LANG_CODE3",(Object)langCode,"LANG_CODE3"+i++));
+		}
+		if(tableLang)
+			sb.append(table.name()+"_LANG");
+		else
+			sb.append(table.name());
+		sb.append(" SET ");
+		for (int y = 0; y < setList.size(); y++) {
+			Criteria craCriteria = setList.get(y);
+			sb.append( y > 0 ? ",":"" );
+			sb.append(PI_CLOUM+craCriteria.getColumn()+PI_CLOUM);
+			sb.append(" = ");
+			if(craCriteria.getValue()==null){
+				sb.append(" (NULL) ");
+			}else{
+				sb.append(COLON);
+				sb.append(craCriteria.getParam());
+				para.put(craCriteria.getParam(), craCriteria.getValue());
+			}
+		}
+		if(pkParaList.size() > 0){
+			sb.append(" WHERE ");
+			for (int y = 0; y < pkParaList.size(); y++) {
+				Criteria craCriteria = pkParaList.get(y);
+				sb.append( y > 0 ? " AND ":"" );
+				sb.append(PI_CLOUM+craCriteria.getColumn()+PI_CLOUM);
+				sb.append(" = ");
+				sb.append(COLON);
+				sb.append(craCriteria.getParam());
+				para.put(craCriteria.getParam(), craCriteria.getValue());
+			}
+		}
+		
+		if(setList.size() > 0&&pkParaList.size() > 0){
+			int row = 0;
+			try{
+				row = executeNativeSQL(sb.toString(),para);
+			} catch (BadSqlGrammarException ba) {
+				throw new RollBackTechnicalException(CommonMessageCode.COM4993,ba);
+			}
+			if(row == 0){
+				throw new RollBackTechnicalException(CommonMessageCode.COM4993," Row Update 0 SQL:" + sb.toString());
+			}
+		}else{
+			if (logger.isDebugEnabled()) {
+				logger.debug("update(T, boolean) - column size 0"); //$NON-NLS-1$
+			}
+			throw new RollBackTechnicalException(CommonMessageCode.COM4993,"pk size 0");
+
+		}
+		
+		return target;
+	}
+	
+//	private Object getData(Method method,Object target) throws RollBackException, NonRollBackException {
+//		return null;
+//	}
 	@Override
 	public <T extends Object> T delete(T target) throws RollBackException, NonRollBackException {
 		return target;
@@ -874,9 +1123,51 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 	@Override
 	public <T> T get(Serializable target,  Class<T> clazz) throws RollBackException, NonRollBackException {
 		ClassMapper classMapper =JPAUtil.getClassMapper(clazz);
+		
 		Property property = classMapper.getPropertyId();
-		String sql = "select * from " + classMapper.getTableName() + " where " + property.getColumnName() + " = ?";
-		return nativeQueryOneRow(sql , JPAUtil.getRm(clazz), target);
+		String sql=null;
+		if(property!=null&&ColumnType.embeddedId.equals(property.getColumnType())){
+			try {
+				Object embeddedIdTraget = target;
+				if(embeddedIdTraget ==null){
+					return null;
+				}
+				ClassMapper classMapperEmbeddedId =JPAUtil.getClassMapper(embeddedIdTraget.getClass());
+				Map<String, List<Property>> column = classMapperEmbeddedId.getColumn();
+				List<Object> para = new LinkedList<Object>();
+				sql = "select * from " + classMapper.getTableName() + " where ";
+				StringBuilder sb =new StringBuilder();
+				for (Map.Entry<String, List<Property>> entry : column.entrySet()){
+					List<Property> properties = entry.getValue();
+					Object objectId = null;
+					for (Property property2 : properties) {
+						objectId =  property2.getMethodGet().invoke(embeddedIdTraget);
+						if(objectId !=null)
+							break;
+					}
+					if(objectId!=null){
+						if(sb.length()>0){
+							sb.append(" and ");
+						}
+						sb.append(" ");
+						sb.append(entry.getKey());
+						sb.append(" = ? ");
+						para.add(objectId);
+					}
+				}
+				sb.insert(0, sql);
+				return nativeQueryOneRow(sb.toString() , JPAUtil.getRm(clazz), para.toArray());
+				
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				return null;
+			}
+			
+		}else{
+			sql = "select * from " + classMapper.getTableName() + " where " + property.getColumnName() + " = ?";
+			return nativeQueryOneRow(sql , JPAUtil.getRm(clazz), target);
+		}
+		
+		
 	}
 	@Override
 	public <T> T get(Serializable target,String lang,  Class<T> clazz) throws RollBackException, NonRollBackException {
@@ -1143,6 +1434,59 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 		criteriaList.add(new Criteria(propertyName, value));
 		return findByColumn(clazz, criteriaList, pagingBean);
 	}
+	@Override
+	public <T> List<T> findByColumn(Class<T> clazz,List<Criteria> criterias, String langCode3) throws RollBackException, NonRollBackException{
+		return findByColumn(clazz, criterias, null, false, langCode3);
+	}
+	@Override
+	public <T> List<T> findByColumn(Class<T> clazz,List<Criteria> criterias,PagingBean pagingBean, String langCode3) throws RollBackException, NonRollBackException{
+		return findByColumn(clazz, criterias, pagingBean, false, langCode3);
+	}
+	@Override
+	public <T> List<T> findByColumn(Class<T> clazz,List<Criteria> criterias,PagingBean pagingBean) throws RollBackException, NonRollBackException{
+		return findByColumn(clazz, criterias, pagingBean, false, null);
+	}
+	@Override
+	public <T> List<T> findByColumn(Class<T> clazz,List<Criteria> criterias,PagingBean pagingBean,boolean like) throws RollBackException, NonRollBackException{
+		return findByColumn(clazz, criterias, pagingBean, like, null);
+	}
+	@Override
+	public <T> List<T> findByColumn(Class<T> clazz, List<Criteria> criterias) throws RollBackException, NonRollBackException{
+		return findByColumn(clazz, criterias, null, false, null);
+	}
+	@Override
+	public <T> List<T> findByColumn(Class<T> clazz,List<Criteria> criterias,PagingBean pagingBean,boolean like, String langCode3) throws RollBackException, NonRollBackException{
+		if(pagingBean==null){
+			String queryString = genQueryStringByExample(clazz, criterias, pagingBean, like, langCode3);
+			Map<String, Object>params = new HashMap<String, Object>();
+			if (criterias != null && criterias.size() > 0) {
+				for (Criteria criteria : criterias) {
+					params.put(criteria.getParam(), criteria.getValue());
+				}
+			}
+			if(langCode3!=null&&!"".equals(langCode3)){
+				params.put("LANG_CODE3", langCode3);
+			}
+			List<T> resultList1 = nativeQuery(queryString, JPAUtil.getRm(clazz), params);
+			return resultList1;
+		
+		}else{
+			pagingBean.setTotalRows(getTotalRowByExample(clazz, criterias, like,langCode3));
+			
+			String qureyString = genQueryStringByExample(clazz, criterias, pagingBean, like, langCode3);
+			Map<String, Object>params = new HashMap<String, Object>();
+			if (criterias != null && criterias.size() > 0) {
+				for (Criteria criteria : criterias) {
+					params.put(criteria.getParam(), criteria.getValue());
+				}
+			}
+			if(langCode3!=null&&!"".equals(langCode3)){
+				params.put("LANG_CODE3", langCode3);
+			}
+			List<T> resultList1 = nativeQuery(qureyString, JPAUtil.getRm(clazz), params);
+			return resultList1;
+		}
+	}
 
 	@Override
 	public <T> T findByColumnOneRow(Class<T> clazz, List<Criteria> criteriaList) throws RollBackException, NonRollBackException{
@@ -1151,6 +1495,10 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 	@Override
 	public <T> T findByColumnOneRow(Class<T> clazz, List<Criteria> criteriaList,boolean like) throws RollBackException, NonRollBackException{
 		return findByColumnOneRow(clazz, criteriaList, null, like);
+	}
+	@Override
+	public <T> T findByColumnOneRow(Class<T> clazz, List<Criteria> criteriaList,String langCode3) throws RollBackException, NonRollBackException{
+		return findByColumnOneRow(clazz, criteriaList, langCode3,false);
 	}
 
 	public <T> T findByColumnOneRow(Class<T> clazz, List<Criteria> criteriaList,String langCode3,boolean like) throws RollBackException, NonRollBackException{
@@ -1178,229 +1526,405 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 		
 	}
 	@Override
-	public <T> T save(T target) throws RollBackException, NonRollBackException {
-		return save(target, false,null);
-	}
-	
-	@Override
-	public <T extends Object> T save(T target, boolean tableLang, String langCode) throws RollBackException, NonRollBackException {
-		Class<? extends Object> clazz = target.getClass();
-		ClassMapper classMapper =JPAUtil.getClassMapper(clazz);
-		Method methodSetId = classMapper.getPropertyId().getMethodSet();
-		Method methodGetId = classMapper.getPropertyId().getMethodGet();
-		KeyHolder keyHolder = saveKeyHolder(target, tableLang, langCode);
-		target = idToBean(keyHolder,target,methodSetId, methodGetId);
- 		return target;
-	}
-	
-	@Override
-	public <T> T saveOrUpdate(T t) throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
+	public <T> List<T> findByProperty(Class<T> clazz, String propertyName, Object value) throws RollBackException ,NonRollBackException {
+		return findByColumn(clazz, propertyName, value);
 	}
 	@Override
-	public <T> T update(T target) throws RollBackException, NonRollBackException {
-		return update(target,false,null,null);
+	public <T> List<T> findByPropertyWithStatus(Class<T> clazz, String propertyName, Object value, String status) throws RollBackException ,NonRollBackException {
+		List<Criteria> criteria = new LinkedList<Criteria>();
+		criteria.add(new Criteria(propertyName, value));
+		criteria.add(new Criteria("STATUS", status));
+		return findByColumn(clazz, criteria);
 	}
-	
 	@Override
-	public <T extends Object> T update(T target, boolean tableLang, String langCode,Long idLang) throws RollBackException, NonRollBackException{
-		if(target instanceof EntityBean){
-			ProcessContext processContext = CurrentThread.getProcessContext();
-			EntityBean entityBean = (EntityBean) target;
-			entityBean.setUpdateDate(new Date());
-			entityBean.setUpdateUser(processContext.getUserName());
-		}
-		int i=0;
-		Class<? extends Object> clazz = target.getClass();
-		ClassMapper classMapper =JPAUtil.getClassMapper(clazz);
-		StringBuilder sb = new StringBuilder();
-		Table table = clazz.getAnnotation(Table.class);
-		List<Criteria> setList = new LinkedList<Criteria>();
-		List<Criteria> pkParaList = new LinkedList<Criteria>();
-		Map<String, Object> para = new HashMap<String, Object>();
-		
-		sb.append(" UPDATE ");
-		if(langCode != null && !langCode.equals("")){
-			setList.add(new Criteria("LANG_CODE3",(Object)langCode,"LANG_CODE3"+i++));
-		}
-		for (String  columnName : classMapper.getColumn().keySet()) {
-			for(Property property : classMapper.getColumn().get(columnName)){
-				Method method = property.getMethodGet();
-				try {
-//					checkColumnNameInTableLang
-					if(!tableLang||(tableLang && checkService.checkColumnNameInTableLang(table.name(), columnName))){
-						if(property.getColumnType() == ColumnType.joinColumns){
-							Object joinColumnsObject = property.getJoinColumns().getMethodGet().invoke(target);
-							if(joinColumnsObject!=null){
-								if(property.getEmbeddedId()!=null)
-									joinColumnsObject = property.getEmbeddedId().getMethodGet().invoke(joinColumnsObject);
-								Object value = property.getMethodGet().invoke(joinColumnsObject);
+	public <T> List<T> findByPropertyWithStatusAndLang(Class<T> clazz, String propertyName, Object value, String status, String LangCode3) throws RollBackException ,NonRollBackException {
+		List<Criteria> criteria = new LinkedList<Criteria>();
+		criteria.add(new Criteria(propertyName, value));
+		criteria.add(new Criteria("STATUS", status));
+		return findByColumn(clazz, criteria, LangCode3);
+	}
+	@Override
+	public <T> List<T> saveMergeList(Class<T> clazz, List<T> newList, List<T> oldList) throws RollBackException, NonRollBackException {
+		return saveMergeList(clazz, newList, oldList, null);
+	}
 
-								if(value != null){
-									//pregen
-									if(value instanceof Number){
-										if(((Number)value).intValue() ==-1){
-											if(checkService.checkIncludeMinusOne(table.name(),columnName)){
-												setList.add(new Criteria(columnName,value,columnName+i++));
-											}else{
-												setList.add(new Criteria(columnName,(Object)null,columnName+i++));
-											}
-										}else{
-											setList.add(new Criteria(columnName,value,columnName+i++));
-										}
-									}else if(value instanceof Date){
-										if(((Date) value).getTime() == 0L){
-											setList.add(new Criteria(columnName,(Object)null,columnName+i++));
-										}else{
-											setList.add(new Criteria(columnName,value,columnName+i++));
-										}
-									}else{
-										setList.add(new Criteria(columnName,value,columnName+i++));
-									}
-									//pregen
-								}
-							}
-							
-						}
-						if(property.getColumnType() == ColumnType.joinColumn||property.getColumnType() == ColumnType.column){
-							Object value = method.invoke(target);
-							if(value == null)
-								continue;
-							Entity entity = method.getReturnType().getAnnotation(Entity.class);
-							if(entity!=null){
-								ClassMapper classMapperId = JPAUtil.getClassMapper(method.getReturnType());
-								value = classMapperId.getPropertyId().getMethodGet().invoke(value);
-							}
-							if(value != null){
-								//pregen
-								if(value instanceof Number){
-									if(((Number)value).intValue() ==-1){
-										if(checkService.checkIncludeMinusOne(table.name(),columnName)){
-											setList.add(new Criteria(columnName,value,columnName+i++));
-										}else if (checkService.checkClearableList(table.name(),columnName)){
-											setList.add(new Criteria(columnName,(Object)null,columnName+i++));
-										}
-									}else{
-										setList.add(new Criteria(columnName,value,columnName+i++));
-									}
-								}else if(value instanceof Date){
-									if(((Date) value).getTime() == 0L){
-										setList.add(new Criteria(columnName,(Object)null,columnName+i++));
-									}else{
-										setList.add(new Criteria(columnName,value,columnName+i++));
-									}
-								}else{
-									setList.add(new Criteria(columnName,value,columnName+i++));
-								}
-								//pregen
-							}
-						}
-					}//case checkColumnNameInTableLang
-					
-					if(property.getColumnType() == ColumnType.id){
-						Object value = method.invoke(target);
-						if(value != null){
-							if(tableLang){
-								pkParaList.add(new Criteria(columnName+"_LANG",idLang,columnName+"_LANG"+i++));
-							}else{
-								pkParaList.add(new Criteria(columnName,value,columnName+i++));
+	@Override
+	public <T> List<T> saveMergeList(Class<T> clazz, List<T> newList, List<T> oldList, String subListColumnName) throws RollBackException, NonRollBackException {
+		List<T> resultList = new LinkedList<T>();
+		ClassMapper classMapper = JPAUtil.getClassMapper(clazz);
+		Method methodGet = classMapper.getPropertyId().getMethodGet();
+		Method methodSetStatus = classMapper.getColumn().get("STATUS").get(0).getMethodSet();
+		
+		Method methodGetSubDetail = null;
+		Method methodSetSubDetail = null;
+		try{
+			
+		
+		if(subListColumnName != null){
+			methodGetSubDetail = classMapper.getColumn().get(subListColumnName).get(0).getMethodGet();
+			methodSetSubDetail = classMapper.getColumn().get(subListColumnName).get(0).getMethodSet();
+		}
+		if(newList != null && newList.size() > 0 && oldList != null && oldList.size() > 0){
+			for (T old : oldList) {
+				if(old == null)
+					continue;
+				boolean have = false;
+				Long idOld = (Long) methodGet.invoke(old);
+				if(idOld != null && idOld > 0){
+					for (T neww : newList) {
+						if(neww == null)
+							continue;
+						Long idNew = (Long) methodGet.invoke(neww);
+						if(idNew != null && idNew > 0){
+							if(idNew.equals(idOld)){
+								have = true;
 							}
 						}
 					}
-					
-					if(property.getColumnType() == ColumnType.embeddedId){
-						Object embeddedIdObject = property.getEmbeddedId().getMethodGet().invoke(target);
-						if(embeddedIdObject!=null){
-							Object valueEmbeddedId = method.invoke(embeddedIdObject);
-							if(valueEmbeddedId!=null){
-								if(tableLang&&(columnName+"_LANG").equals(checkService.getPkTableLangByTableName(table.name()))){
-									pkParaList.add(new Criteria(columnName+"_LANG",idLang,columnName+"_LANG"+i++));
-								}else{
-									pkParaList.add(new Criteria(columnName,valueEmbeddedId,columnName+i++));
+				}
+				if (have == false) {
+					methodSetStatus.invoke(old, "I");
+					this.update(old);
+				}
+			}
+			for (T neww : newList) {
+				if(neww == null)
+					continue;
+				Long idNew = (Long) methodGet.invoke(neww);
+				if(idNew != null && idNew > 0){
+					for (T old : oldList) {
+						Long idOld = (Long) methodGet.invoke(old);
+						if(idOld != null && idOld > 0){
+							if(idNew.equals(idOld)){
+								if(subListColumnName != null){
+									Object subDetail = methodGetSubDetail.invoke(neww);
+									Object resultSubDetail = this.saveOrUpdate(subDetail);
+									methodSetSubDetail.invoke(neww, resultSubDetail);
 								}
-								
+								resultList.add(this.update(neww));
 							}
 						}
 					}
-					
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					logger.error("update(T, boolean)", e); //$NON-NLS-1$
+				}else{
+					if(subListColumnName != null){
+						Object subDetail = methodGetSubDetail.invoke(neww);
+						Object resultSubDetail = this.save(subDetail);
+						methodSetSubDetail.invoke(neww, resultSubDetail);
+					}
+					resultList.add(this.save(neww));
+				}
+
+			}
+		}else if(newList != null && newList.size() > 0){
+			for (T neww : newList) {
+				if(neww != null){
+					if(subListColumnName != null){
+						Object subDetail = methodGetSubDetail.invoke(neww);
+						Object resultSubDetail = this.save(subDetail);
+						methodSetSubDetail.invoke(neww, resultSubDetail);
+					}
+					resultList.add(this.save(neww));
+				}
+			}
+		}else if(oldList != null && oldList.size() > 0){
+			for (T old : oldList) {
+				if(old != null){
+					methodSetStatus.invoke(old, "I");
+					resultList.add(this.update(old));
 				}
 			}
 		}
-		if(tableLang){
-			pkParaList.add(new Criteria("LANG_CODE3",(Object)langCode,"LANG_CODE3"+i++));
+		}catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
-		if(tableLang)
-			sb.append(table.name()+"_LANG");
-		else
-			sb.append(table.name());
-		sb.append(" SET ");
-		for (int y = 0; y < setList.size(); y++) {
-			Criteria craCriteria = setList.get(y);
-			sb.append( y > 0 ? ",":"" );
-			sb.append(PI_CLOUM+craCriteria.getColumn()+PI_CLOUM);
-			sb.append(" = ");
-			if(craCriteria.getValue()==null){
-				sb.append(" (NULL) ");
-			}else{
-				sb.append(COLON);
-				sb.append(craCriteria.getParam());
-				para.put(craCriteria.getParam(), craCriteria.getValue());
-			}
-		}
-		if(pkParaList.size() > 0){
-			sb.append(" WHERE ");
-			for (int y = 0; y < pkParaList.size(); y++) {
-				Criteria craCriteria = pkParaList.get(y);
-				sb.append( y > 0 ? " AND ":"" );
-				sb.append(PI_CLOUM+craCriteria.getColumn()+PI_CLOUM);
-				sb.append(" = ");
-				sb.append(COLON);
-				sb.append(craCriteria.getParam());
-				para.put(craCriteria.getParam(), craCriteria.getValue());
-			}
-		}
+		return resultList;
+	}
+
+	@Override
+	public <T> BeanLang<T> saveOrUpdate(BeanLang<T> beanLang) throws RollBackException, NonRollBackException {
+		if(beanLang == null)
+			return null;
+		ClassMapper classMapper = (beanLang.getEngLang() != null ? JPAUtil.getClassMapper(beanLang.getEngLang().getClass()) : JPAUtil.getClassMapper(beanLang.getBeanOtherLang().getClass()));
+//		Class<? extends Object> clazz = beanLang.getEngLang().getClass();
 		
-		if(setList.size() > 0&&pkParaList.size() > 0){
-			int row = 0;
-			try{
-				row = executeNativeSQL(sb.toString(),para);
-			} catch (BadSqlGrammarException ba) {
-				throw new RollBackTechnicalException(CommonMessageCode.COM4993,ba);
+		Object idEng = null;
+		T engLang = null;
+		if(beanLang.getEngLang() != null){
+			engLang = saveOrUpdate(beanLang.getEngLang());
+			beanLang.setEngLang(engLang);
+			if(engLang != null){
+				try {
+					idEng = classMapper.getPropertyId().getMethodGet().invoke(beanLang.getEngLang());
+					if(beanLang.getOtherLang() != null)
+						classMapper.getPropertyId().getMethodSet().invoke(beanLang.getOtherLang(),idEng);
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					logger.error("saveAndLang getId message ", e);
+				}
 			}
-			if(row == 0){
-				throw new RollBackTechnicalException(CommonMessageCode.COM4993," Row Update 0 SQL:" + sb.toString());
+		}
+		T otherLang = null;
+		
+		boolean isHaveLang = checkService.checkTableLang(classMapper.getTableName());
+		boolean isHaveLangCode = beanLang.getLangCode() != null 
+				&& !"".equals(beanLang.getLangCode()) 
+				&& !"ENG".equals(beanLang.getLangCode()) ? true : false;
+		if(isHaveLang && isHaveLangCode){
+			if(beanLang.getOtherLang() != null){
+				if(idEng == null){
+					try {
+						idEng = classMapper.getPropertyId().getMethodGet().invoke(beanLang.getOtherLang());
+						if(idEng == null)
+							throw new RollBackTechnicalException(CommonMessageCode.COM4987);
+					} catch (IllegalAccessException | IllegalArgumentException| InvocationTargetException e) {
+						e.printStackTrace();
+					}
+				}
+				Long idlang = beanLang.getIdLang();
+				if(idlang==null){
+					if(beanLang.getEngLang() != null){
+						if(beanLang.getEngLang() instanceof EntityBean){
+							EntityBean entityBean = (EntityBean) beanLang.getEngLang();
+							
+							//TODO status bug A & W beanLang.getBeanOtherLang()
+//							idlang =  checkLangBean(beanLang.getEngLang().getClass(), classMapper.getPropertyId().getColumnName(), idEng, entityBean.getStatus(), beanLang.getLangCode());
+							idlang =  checkLangBean(beanLang.getEngLang().getClass(), classMapper.getPropertyId().getColumnName(), idEng, entityBean.getStatus(), beanLang.getLangCode());
+						}
+					}else{
+						if(beanLang.getOtherLang() instanceof EntityBean){
+							EntityBean entityBean = (EntityBean) beanLang.getOtherLang();
+							idlang =  checkLangBean(beanLang.getBeanOtherLang().getClass(), classMapper.getPropertyId().getColumnName(), idEng, entityBean.getStatus(), beanLang.getLangCode());
+						}
+					}
+				}else{
+					if(checkLangBeanId((beanLang.getEngLang() != null ? beanLang.getEngLang().getClass() : beanLang.getBeanOtherLang().getClass()), classMapper.getPropertyId().getColumnName(), idEng,idlang)==null){
+						throw new RollBackTechnicalException(CommonMessageCode.COM4986);
+					}
+				}
+				
+				
+				if(idlang!=null)
+					otherLang = update(beanLang.getOtherLang(), true, beanLang.getLangCode(),idlang);
+				else{
+					KeyHolder keyHolder = saveKeyHolder(beanLang.getOtherLang(),true, beanLang.getLangCode());
+					
+					try {
+						Method methodGet = ClassUtil.findGetter(BeanLang.class, "idLang");
+						Method methodSetId= ClassUtil.findSetter(BeanLang.class, "idLang");
+						otherLang = beanLang.getOtherLang();
+						beanLang = idToBean(keyHolder, beanLang, methodSetId, methodGet);
+					} catch (NoSuchFieldException | IntrospectionException e) {
+						e.printStackTrace();
+					}
+				}
+				beanLang.setOtherLang(otherLang);
+			}
+		}
+		return beanLang;
+	}
+	
+	private boolean checkLangBean(Class<? extends Object> class1) throws RollBackException, NonRollBackException {
+		ClassMapper classMapper = JPAUtil.getClassMapper(class1);
+		// check have table Lang
+		return checkService.checkTableLang(classMapper.getTableName());
+	}
+
+	private Long checkLangBean(Class<? extends Object> class1,String columnName, Object idEng, String status, String langCode) throws RollBackException, NonRollBackException {
+		ClassMapper classMapper = JPAUtil.getClassMapper(class1);
+		
+		// check have table Lang
+		boolean isHaveLang = checkService.checkTableLang(classMapper.getTableName());
+		if(isHaveLang){
+			StringBuilder sb = new StringBuilder();
+			sb.append("select ");
+			sb.append(columnName);
+			sb.append("_LANG from ");
+			sb.append(classMapper.getTableName());
+			sb.append("_LANG ");
+			sb.append(" WHERE ");
+			sb.append(columnName);
+			sb.append(" = :ID_ENG");
+			sb.append(" AND LANG_CODE3 = :LANG_CODE3");
+			Map<String,  Object>params = new HashMap<String, Object>();
+			if(!"".equals(status) && status != null){
+//				sb.append(" AND STATUS = :STATUS");
+//				params.put("STATUS", status);
+				sb.append(" AND STATUS IN ('A','W') ");
+			}
+			params.put("ID_ENG", idEng);
+			params.put("LANG_CODE3", langCode);
+			List<Long> conut = nativeQuery(sb.toString(), LONG_MAPPER, params);
+			if(conut==null ||conut.size()==0){
+				return null;
+			}else{
+				return conut.get(0);
 			}
 		}else{
-			if (logger.isDebugEnabled()) {
-				logger.debug("update(T, boolean) - column size 0"); //$NON-NLS-1$
-			}
-			throw new RollBackTechnicalException(CommonMessageCode.COM4993,"pk size 0");
-
+			return null;
+		}
+	}
+	
+	private Long checkLangBeanId(Class<? extends Object> class1,String columnName, Object idEng, Object idLang) throws RollBackException, NonRollBackException {
+		ClassMapper classMapper = JPAUtil.getClassMapper(class1);
+		StringBuilder sb = new StringBuilder();
+		sb.append("select ");
+		sb.append(columnName);
+		sb.append("_LANG from ");
+		sb.append(classMapper.getTableName());
+		sb.append("_LANG ");
+		sb.append(" WHERE ");
+		sb.append(columnName);
+		sb.append(" = :ID_ENG");
+		sb.append(" AND ");
+		sb.append(columnName);
+		sb.append("_LANG ");
+		sb.append(" = :ID_LANG");
+		Map<String,  Object>params = new HashMap<String, Object>();
+		params.put("ID_ENG", idEng);
+		params.put("ID_LANG", idLang);
+		List<Long> conut = nativeQuery(sb.toString(), LONG_MAPPER, params);
+		if(conut==null ||conut.size()==0){
+			return null;
+		}else{
+			return conut.get(0);
 		}
 		
-		return target;
+	}
+	@Override
+	public <T> T save(T target, String langCode3) throws RollBackException ,NonRollBackException {
+		return save(target, true, langCode3);
 	}
 	
 	@Override
-	public <T> List<T> findByColumn(Class<T> clazz, List<Criteria> criteriaList, PagingBean pagingBean)
-			throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
+	public <T> List<T> findByProperty(Class<T> clazz, List<Criteria> criteriaList) throws RollBackException ,NonRollBackException {
+		return findByColumn(clazz, criteriaList, (PagingBean)null);
 	}
 	@Override
-	public <T> List<T> findByColumn(Class<T> clazz, List<Criteria> criterias)
-			throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
+	public <T> List<T> findByProperty(Class<T> clazz, List<Criteria> criteriaList, String langCode) throws RollBackException ,NonRollBackException {
+		return findByColumn(clazz, criteriaList, langCode);
 	}
 	@Override
-	public <T> List<T> findByColumn(Class<T> clazz, List<Criteria> criterias, PagingBean pagingBean, boolean like)
-			throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
+	public <T> List<T> findByProperty(Class<T> clazz, List<Criteria> criteriaList, PagingBean pagingBean) throws RollBackException ,NonRollBackException {
+		return findByColumn(clazz, criteriaList, pagingBean);
+	}
+	
+	@Override
+	public <T> List<T> findByProperty(Class<T> clazz, String propertyName, Object value, PagingBean pagingBean) throws RollBackTechnicalException {
+//		if(pagingBean==null){
+//			try{
+//				List<Criteria> criteriaList = new LinkedList<Criteria>();
+//				criteriaList.add(new Criteria(propertyName, value));
+//				String queryString = genQueryStringByExample(clazz, criteriaList, null, null, false);
+//				Query query = genQueryByExample(clazz , queryString, criteriaList, null, false);
+////				Query query = entityManager.createQuery(queryString,clazz);
+////				query.setParameter("propertyValue", value);
+//				
+//				return query.getResultList();
+//			}catch(RuntimeException e){
+//				throw new RollBackTechnicalException(CommonMessageCode.COM4991, e);
+//			}
+//			
+//		}else{
+//			try{
+//				List<Criteria> criteriaList = new LinkedList<Criteria>();
+//				criteriaList.add(new Criteria(propertyName, value));
+//				
+//				pagingBean.setTotalRows(getTotalRowByExample(clazz, criteriaList, null, false));
+//				
+//				String qureyString = genQueryStringByExample(clazz, criteriaList, null, null, false);
+//				Query query = genQueryByExample(clazz,qureyString, criteriaList, pagingBean.getOrderList(), false);
+//				
+//				query.setFirstResult((int)pagingBean.getOffsetBegin()).setMaxResults(pagingBean.getRowsPerPage());
+//				
+//				return query.getResultList();
+//				
+//			}catch (RuntimeException re){
+//				throw new RollBackTechnicalException(CommonMessageCode.COM4991, re);
+//			}
+//		}
 		return null;
 	}
-
+	protected Long getTotalRowByExample(Class<?> clazz,List<Criteria> criteriaList,String extraWhereClause,boolean like) {
+//		StringBuilder countQueryString = new StringBuilder();
+//		countQueryString.append("select count(*) from ");
+//		countQueryString.append(clazz.getSimpleName());
+//		countQueryString.append(AILIAT);
+//		if(criteriaList !=null && criteriaList.size()>0){
+//			countQueryString.append(WHERE);
+//			for (Criteria criteria : criteriaList) {
+//				if(criteria.getValue() instanceof String && like){
+//					countQueryString.append(AND_UPPER);
+//					countQueryString.append(criteria.getColumn());
+//					countQueryString.append(LIKE);
+//					countQueryString.append(criteria.getParam());
+//				}else{
+//					countQueryString.append(AND);
+//					countQueryString.append(criteria.getColumn());
+//					countQueryString.append(EQU);
+//					countQueryString.append(criteria.getParam());
+//				}
+//			}
+//			
+//			if(extraWhereClause!=null&&extraWhereClause.length()>0){
+//				countQueryString.append(extraWhereClause);
+//			}
+//		}
+//		
+//		Query countQuery = entityManager.createQuery(countQueryString.toString());
+//		if(criteriaList !=null && criteriaList.size()>0){
+//			for (Criteria criteria : criteriaList) {
+//				countQuery.setParameter(criteria.getColumn(), criteria.getValue());
+//			}
+//		}
+//		return (Long)countQuery.getSingleResult();
+		return null;
+	}
+	
+//	private static final String LIKE = ") like :"; 
+	private static final String AND = " and "; 
+	private static final String AND_UPPER = " and UPPER("; 
+//	private static final String EQU = " = :"; 
+//	private static final String WHERE = " where 1=1 "; 
+	private static final String FROM = "select * from "; 
+//	private static final String ORDER = " order by "; 
+//	private static final String AILIAT = " "; 
+	protected String genQueryStringByExample(Class<?> clazz,List<Criteria> criteriaList, List<Order> orderList,String extraWhereClause,boolean like) {
+		StringBuilder queryString = new StringBuilder();
+		queryString.append(FROM);
+		queryString.append(clazz.getSimpleName());
+		queryString.append(AILIAT);
+		
+		if(criteriaList !=null && criteriaList.size()>0){
+			queryString.append(WHERE);
+			for (Criteria criteria : criteriaList) {
+				
+				if(criteria.getValue() instanceof String && like){
+					queryString.append(AND_UPPER);
+					queryString.append(criteria.getColumn());
+					queryString.append(LIKE);
+					queryString.append(criteria.getParam());
+				}else{
+					queryString.append(AND);
+					queryString.append(criteria.getColumn());
+					queryString.append(EQU);
+					queryString.append(criteria.getParam());
+				}
+			}
+		}
+		if(extraWhereClause!=null &&extraWhereClause.length()>0){
+			if (criteriaList==null||criteriaList.size()>0) {
+				queryString.append(extraWhereClause);
+			}
+		}
+		if(orderList!=null&&orderList.size()>0){
+			queryString.append(ORDER);
+			for (int i = 0; i < orderList.size(); i++) {
+				Order order = orderList.get(i);
+				queryString.append(" "+order.getOrderBy()+" "+order.getOrderMode()+",");
+				queryString.deleteCharAt(queryString.length()-1);
+			}
+		}
+		
+		return queryString.toString();
+	}
 }

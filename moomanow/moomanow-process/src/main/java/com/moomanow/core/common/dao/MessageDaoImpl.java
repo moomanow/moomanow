@@ -84,10 +84,5 @@ public class MessageDaoImpl extends JdbcCommonDaoImpl implements MessageDao {
 		
 	}
 
-	@Override
-	public <T> T saveOrUpdate(T target) throws RollBackException, NonRollBackException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

@@ -912,5 +912,18 @@ public class CommonDaoImpl implements CommonDao {
 			throw new RollBackTechnicalException(CommonMessageCode.COM4998,e);
 		}
 	}
+
+	@Override
+	public <T> List<T> findByProperty(Class<T> class1, List<Criteria> criterias) throws RollBackException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> List<T> findByProperty(Class<T> class1, List<Criteria> criterias, PagingBean value)
+			throws RollBackException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
