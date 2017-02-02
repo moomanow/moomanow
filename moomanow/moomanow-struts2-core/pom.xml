@@ -3,8 +3,7 @@
   <parent>
     <groupId>com.moomanow</groupId>
     <artifactId>moomanow</artifactId>
-    <version>0.0.7</version>
-    <relativePath>..</relativePath>
+    <version>0.0.8-SNAPSHOT</version>
   </parent>
   <artifactId>moomanow-struts2-core</artifactId>
   <dependencies>
