@@ -11,3 +11,5 @@ bin
 /target
 .springBeans
 .DS_Store
+.versionsBackup
+pom.xml.versionsBackup
