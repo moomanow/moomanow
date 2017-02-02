@@ -28,6 +28,14 @@
 			<groupId>com.moomanow</groupId>
 			<artifactId>moomanow-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.moomanow</groupId>
+			<artifactId>moomanow-paging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.moomanow</groupId>
+			<artifactId>moomanow-message</artifactId>
+		</dependency>
 	</dependencies>
 	
 	  <build>

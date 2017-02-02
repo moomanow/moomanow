@@ -1,1 +1,13 @@
-/target/
+local-values.conf
+target
+*~
+bin
+*.idea
+*.iml
+*.eml
+.project
+.settings
+.classpath
+/target
+.springBeans
+.DS_Store

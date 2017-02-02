@@ -4,37 +4,9 @@
     <groupId>com.moomanow</groupId>
     <artifactId>moomanow</artifactId>
     <version>0.0.7</version>
-    <relativePath>..</relativePath>
   </parent>
-  <artifactId>moomanow-struts2-core</artifactId>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.apache.struts</groupId>
-  		<artifactId>struts2-core</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>spring-beans</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.struts</groupId>
-  		<artifactId>struts2-json-plugin</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.struts</groupId>
-  		<artifactId>struts2-rest-plugin</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.moomanow</groupId>
-  		<artifactId>moomanow-core</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.moomanow</groupId>
-  		<artifactId>moomanow-message</artifactId>
-  	</dependency>
-  </dependencies>
-  
-    <build>
+  <artifactId>moomanow-message</artifactId>
+   <build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -75,15 +47,4 @@
 			</plugin>
 		</plugins>
 	</build>
-    <dependencyManagement>
-    	<dependencies>
-    		<dependency>
-    			<groupId>org.apache.struts</groupId>
-    			<artifactId>struts2-bom</artifactId>
-    			<version>2.5.2</version>
-    			<type>pom</type>
-    			<scope>import</scope>
-    		</dependency>
-    	</dependencies>
-    </dependencyManagement>
 </project>
