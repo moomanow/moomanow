@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class UserBeanDefault implements UserBean ,Serializable{
+public class UserBeanDefault implements UserBean,Serializable{
 
 	/**
 	 * 
@@ -21,7 +21,7 @@ public class UserBeanDefault implements UserBean ,Serializable{
 	private Set<String> privileges;
 	private String status;
 //	private String roleName;
-	private String userImagePath;
+//	private String userImagePath;
 	public String getUserId() {
 		return userId;
 	}
@@ -74,35 +74,23 @@ public class UserBeanDefault implements UserBean ,Serializable{
 	public String getName() {
 		return firstName + " "+lastName;
 	}
-	@Override
-	public String getRole() {
-		List<String> list = new ArrayList<String>(roles);
-		return list.get(list.size()-1);
-	}
-	@Override
-	public void setRole(String role) {
-		if(roles==null)
-			roles = new HashSet<String>();
-		roles.add(role);
-	}
-	@Override
-	public String getRoleName() {
-		List<String> list = new ArrayList<String>(roles);
-		return list.get(list.size()-1);
-	}
-	
-	@Override
-	public void setRoleName(String userRoleName) {
-//		this.rolesName = userRoleName;
-	}
-	@Override
-	public String getUserImagePath() {
-		return userImagePath;
-	}
-	@Override
-	public void setUserImagePath(String userImagePath) {
-		this.userImagePath = userImagePath;
-	}
+//	@Override
+//	public String getRole() {
+//		List<String> list = new ArrayList<String>(roles);
+//		return list.get(list.size()-1);
+//	}
+//	@Override
+//	public void setRole(String role) {
+//		if(roles==null)
+//			roles = new HashSet<String>();
+//		roles.add(role);
+//	}
+//	@Override
+//	public String getRoleName() {
+//		List<String> list = new ArrayList<String>(roles);
+//		return list.get(list.size()-1);
+//	}
+//	
 
 	
 	

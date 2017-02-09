@@ -25,13 +25,12 @@
 		<module>moomanow-core</module>
 		<module>moomanow-struts2-core</module>
 		<module>moomanow-process</module>
-		
-		
 		<module>moomanow-oauth2</module>
 		<module>moomanow-logger</module>
 		<module>moomanow-langbean</module>
 		<module>moomanow-paging</module>
 		<module>moomanow-message</module>
+		<module>moomanow-authentication</module>
 	</modules>
 
 	<scm>
@@ -517,6 +516,11 @@
 			<dependency>
 				<groupId>com.moomanow</groupId>
 				<artifactId>moomanow-logger</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow</groupId>
+				<artifactId>moomanow-authentication</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

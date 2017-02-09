@@ -96,10 +96,10 @@ public class ProcessContext {
 		if(userBean==null){
 //			userMenuService = ApplicationContextUtil.getBean("userMenuService");
 			userBean= new UserBeanDefault();
-			userBean.setRole("GUEST");
+//			userBean.setRole("GUEST");
 			HashSet<String> pri = new HashSet<String>();
-			pri.add("COM000000");
-			userBean.setPrivileges(pri);
+//			pri.add("COM000000");
+//			userBean.setPrivileges(pri);
 //			ProcessResult<List<MenuBean>> ProcessResultMenu = userMenuService.generateMenuList(ProcessResult.getResult());
 		}
 		return userBean;
