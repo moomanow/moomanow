@@ -31,6 +31,7 @@
 		<module>moomanow-paging</module>
 		<module>moomanow-message</module>
 		<module>moomanow-authentication</module>
+		<module>moomanow-fps</module>
 	</modules>
 
 	<scm>
