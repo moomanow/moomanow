@@ -13,10 +13,11 @@ public class NeuronResult<T> implements INeuronResult<T> {
 		return null;
 	}
 
-	public void selectNextNeuron() {
+	public void selectNextNeuron(NeuronCode neuronCode) {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 
 }
