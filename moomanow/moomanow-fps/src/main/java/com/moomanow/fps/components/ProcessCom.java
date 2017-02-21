@@ -1,5 +1,5 @@
 package com.moomanow.fps.components;
 
-public abstract class ProcessCom<Artery,Vein> implements Component<Artery,Vein>  {
+public abstract class ProcessCom implements Neuron  {
 
 }
