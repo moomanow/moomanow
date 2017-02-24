@@ -1,6 +1,8 @@
-package com.moomanow.fps.dynamicbean;
+package com.moomanow.fps.dynamicbean.bean;
 
 import java.io.Serializable;
+
+import com.moomanow.fps.dynamicbean.converter.DynamicBeanConverter;
 
 public class DynamicBeanPro implements Serializable {
 	

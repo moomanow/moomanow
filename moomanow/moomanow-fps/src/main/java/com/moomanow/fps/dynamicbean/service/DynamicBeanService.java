@@ -1,4 +1,6 @@
-package com.moomanow.fps.dynamicbean;
+package com.moomanow.fps.dynamicbean.service;
+
+import com.moomanow.fps.dynamicbean.bean.DynamicBeanPro;
 
 public interface DynamicBeanService {
 

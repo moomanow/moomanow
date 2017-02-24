@@ -1,8 +1,10 @@
-package com.moomanow.fps.dynamicbean;
+package com.moomanow.fps.dynamicbean.service;
 
-public class DynamicBeanDatabaseServiceImpl implements DynamicBeanService {
+import com.moomanow.fps.dynamicbean.bean.DynamicBeanPro;
 
-	public DynamicBeanPro getKey(String methodName,String Name) {
+public class DynamicBeanServiceImpl implements DynamicBeanService {
+
+	public DynamicBeanPro getKey(String methodName,String name) {
 		String key = null;
 		if (methodName.startsWith("get")) {
 			key=  methodName.substring(methodName.indexOf("get") + 3);

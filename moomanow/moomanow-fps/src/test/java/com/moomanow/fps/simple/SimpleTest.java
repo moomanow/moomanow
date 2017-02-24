@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.moomanow.fps.backbone.BackBone;
 import com.moomanow.fps.bean.INeuronResult;
-import com.moomanow.fps.dynamicbean.DynamicBeanServiceImpl;
+import com.moomanow.fps.dynamicbean.service.DynamicBeanServiceImpl;
 
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class,

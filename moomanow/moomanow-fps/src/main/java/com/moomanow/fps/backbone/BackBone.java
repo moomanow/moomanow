@@ -5,12 +5,13 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import com.moomanow.fps.BrainService;
 import com.moomanow.fps.bean.INeuronResult;
 import com.moomanow.fps.bean.NeuronResult;
+import com.moomanow.fps.brain.bean.BrainBean;
+import com.moomanow.fps.brain.service.BrainService;
 import com.moomanow.fps.components.Neuron;
-import com.moomanow.fps.dynamicbean.DynamicBeanService;
-import com.moomanow.fps.dynamicbean.ProxyDynamicBean;
+import com.moomanow.fps.dynamicbean.proxy.ProxyDynamicBean;
+import com.moomanow.fps.dynamicbean.service.DynamicBeanService;
 
 public class BackBone {
 
@@ -25,19 +26,18 @@ public class BackBone {
 		this.brainService = brainService;
 	}
 
-	public <DataOut> INeuronResult<DataOut> execute(String neuronName, Map<String, Object> data,
-			Class<DataOut> dataOutClass) {
-		List<Neuron<?>> neurons = brainService.getNeuronByName(neuronName);
-		for (Neuron neuron : neurons) {
+	public <DataOut> INeuronResult<DataOut> execute(String brainCode, Map<String, Object> data,Class<DataOut> dataOutClass) {
+		BrainBean brainBean  = brainService.findBrainBean(brainCode);
+		for (Neuron neuron : brainBean.getLineNeuron()) {
 			Object dataInput = null;
 			Type type = neuron.getClass().getGenericSuperclass();
 			ParameterizedType parameterizedType = (ParameterizedType) type;
 			Type typeed = parameterizedType.getActualTypeArguments()[0];
-			dataInput = ProxyDynamicBean.newInstance(data, (Class) typeed, dynamicBeanService, neuronName);
+			dataInput = ProxyDynamicBean.newInstance(data, (Class) typeed, dynamicBeanService, brainCode);
 
 			neuron.execute(dataInput);
 		}
-		DataOut dataOut = ProxyDynamicBean.newInstance(data, dataOutClass, dynamicBeanService, neuronName);
+		DataOut dataOut = ProxyDynamicBean.newInstance(data, dataOutClass, dynamicBeanService, brainCode);
 		return new NeuronResult<DataOut>(dataOut);
 	}
 

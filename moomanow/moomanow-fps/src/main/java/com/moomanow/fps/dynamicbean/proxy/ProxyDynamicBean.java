@@ -1,10 +1,13 @@
-package com.moomanow.fps.dynamicbean;
+package com.moomanow.fps.dynamicbean.proxy;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.mockito.cglib.proxy.InvocationHandler;
 import org.mockito.cglib.proxy.Proxy;
+
+import com.moomanow.fps.dynamicbean.bean.DynamicBeanPro;
+import com.moomanow.fps.dynamicbean.service.DynamicBeanService;
 
 public class ProxyDynamicBean implements InvocationHandler {
 

@@ -1,4 +1,4 @@
-package com.moomanow.fps.dynamicbean;
+package com.moomanow.fps.dynamicbean.converter;
 
 public interface DynamicBeanConverter<T> {
 
