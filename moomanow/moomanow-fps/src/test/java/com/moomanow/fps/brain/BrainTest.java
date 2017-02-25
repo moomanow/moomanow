@@ -29,7 +29,7 @@ import com.moomanow.fps.dynamicbean.service.DynamicBeanServiceImpl;
 	    DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class })
 @ContextConfiguration(locations = {
       "classpath:spring.xml",
-      "classpath:prj-simpleProcess.xml"})
+      "classpath:prj-brain.xml"})
 public class BrainTest {
 	
 	@Autowired
