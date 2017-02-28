@@ -26,7 +26,7 @@ public class SimpleTest {
 		backBone.setDynamicBeanService(new DynamicBeanServiceImpl());
 		Map<String, Object> map = new HashMap<String, Object>();
 		SimpleInterFaceDataInput simpleInterFaceData = backBone.buildBean("simple", map, SimpleInterFaceDataInput.class);
-		INeuronResult<SimpleInterFaceDataOut> iNeuronResult = backBone.execute("simple", map,SimpleInterFaceDataOut.class);
+//		INeuronResult<SimpleInterFaceDataOut> iNeuronResult = backBone.execute("simple", map,SimpleInterFaceDataOut.class);
 
 		// Class<?> c = SimpleProcessNeuron.class.getSuperclass();
 		// out.format("Class:%n %s%n%n", c.getCanonicalName());
