@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.moomanow</groupId>
 	<artifactId>moomanow</artifactId>
-	<version>0.0.9</version>
+	<version>0.0.10</version>
 	<name>moomanow</name>
 	<packaging>pom</packaging>
 	<parent>
@@ -506,16 +506,6 @@
 			</dependency>
 			<dependency>
 				<groupId>com.moomanow</groupId>
-				<artifactId>moomanow-struts2-jquery</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.moomanow</groupId>
-				<artifactId>moomanow-struts2-ui</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.moomanow</groupId>
 				<artifactId>moomanow-logger</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -526,22 +516,12 @@
 			</dependency>
 			<dependency>
 				<groupId>com.moomanow</groupId>
-				<artifactId>moomanow-logger-log4j2</artifactId>
+				<artifactId>moomanow-fps</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.moomanow</groupId>
-				<artifactId>moomanow-logger-jbosslog</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.moomanow</groupId>
-				<artifactId>moomanow-logger-log4j</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.moomanow</groupId>
-				<artifactId>moomanow-logger-slf4</artifactId>
+				<artifactId>moomanow-langbean</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>

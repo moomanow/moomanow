@@ -602,6 +602,9 @@ public class JdbcCommonDaoImpl implements JdbcCommonDao {
 							Object value = method.invoke(target);
 							if(value == null)
 								continue;
+							if(value instanceof Collection && ((Collection)value).size()<=0 )
+								continue;
+							
 							Entity entity = method.getReturnType().getAnnotation(Entity.class);
 							if(entity!=null){
 								ClassMapper classMapperId = JPAUtil.getClassMapper(method.getReturnType());
