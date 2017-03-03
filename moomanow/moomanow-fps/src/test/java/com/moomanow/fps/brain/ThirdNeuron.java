@@ -1,5 +1,13 @@
 package com.moomanow.fps.brain;
 
-public class ThirdNeuron {
+import com.moomanow.fps.components.Neuron;
+
+public class ThirdNeuron implements Neuron<ThirdData> {
+
+	@Override
+	public void execute(ThirdData input) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

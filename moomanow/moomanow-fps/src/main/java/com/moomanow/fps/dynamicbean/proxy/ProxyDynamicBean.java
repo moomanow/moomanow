@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.mockito.cglib.proxy.InvocationHandler;
 import org.mockito.cglib.proxy.Proxy;
+import org.springframework.context.ApplicationContext;
 
+import com.moomanow.core.common.context.ApplicationContextUtil;
 import com.moomanow.fps.dynamicbean.bean.DynamicBeanPro;
 import com.moomanow.fps.dynamicbean.service.DynamicBeanService;
 
@@ -21,9 +23,7 @@ public class ProxyDynamicBean implements InvocationHandler {
 		this.neuronName = neuronName;
 	}
 
-	public static Object newInstance( Map<String, Object> map,Class[] interfaces,DynamicBeanService dynamicBeanService,String neuronName) {
-		return Proxy.newProxyInstance(map.getClass().getClassLoader(), interfaces, new ProxyDynamicBean(map, dynamicBeanService,neuronName));
-	}
+
 
 	public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
 		String methodName = m.getName();
@@ -39,9 +39,23 @@ public class ProxyDynamicBean implements InvocationHandler {
 		}
 		return null;
 	}
+//	main function
+	public static Object newInstance( Map<String, Object> map,Class[] interfaces,DynamicBeanService dynamicBeanService,String neuronName) {
+		return Proxy.newProxyInstance(map.getClass().getClassLoader(), interfaces, new ProxyDynamicBean(map, dynamicBeanService,neuronName));
+	}
 
-	public static<DataInput> DataInput newInstance(Map<String, Object> data, Class<DataInput> dataOutClass,DynamicBeanService dynamicBeanService, String neuronName) {
-		return (DataInput) newInstance(data, new Class[]{dataOutClass}, dynamicBeanService, neuronName);
+	public static <T> T newInstance(Map<String, Object> data, Class<T> dataOutClass,DynamicBeanService dynamicBeanService, String neuronName) {
+		return (T) newInstance(data, new Class[]{dataOutClass}, dynamicBeanService, neuronName);
+	}
+
+	public static Object newInstance(Map<String, Object> data, Class[] interfaces, String neuronName) {
+		DynamicBeanService dynamicBeanService = ApplicationContextUtil.getBean(DynamicBeanService.class);
+		return newInstance(data, interfaces, dynamicBeanService, neuronName);
+	}
+	
+	public static <T> T newInstance(Map<String, Object> data, Class<T> dataOutClass, String neuronName) {
+		DynamicBeanService dynamicBeanService = ApplicationContextUtil.getBean(DynamicBeanService.class);
+		return (T) newInstance(data, dataOutClass, dynamicBeanService, neuronName);
 	}
 
 }

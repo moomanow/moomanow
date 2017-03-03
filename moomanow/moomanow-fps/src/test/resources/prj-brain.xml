@@ -16,4 +16,6 @@
 	default-autowire="byName">
 
 	<bean class="com.moomanow.fps.brain.service.BrainServiceImpl"></bean>
+	<bean class="com.moomanow.fps.backbone.BackBone"/>
+	<bean class="com.moomanow.fps.dynamicbean.service.DynamicBeanServiceImpl"/>
 </beans>

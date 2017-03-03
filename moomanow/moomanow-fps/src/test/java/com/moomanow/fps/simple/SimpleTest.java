@@ -4,26 +4,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import com.moomanow.fps.backbone.BackBone;
-import com.moomanow.fps.bean.INeuronResult;
-import com.moomanow.fps.dynamicbean.service.DynamicBeanServiceImpl;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class,
-//	    DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class })
-//@ContextConfiguration(locations = {
-//        "classpath:spring.xml",
-//        "classpath:prj-simpleProcess.xml"})
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class,
+	    DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class })
+@ContextConfiguration(locations = {
+        "classpath:spring.xml",
+        "classpath:prj-simpleProcess.xml"})
 public class SimpleTest {
 
-	// @Autowired
-	// private BackBone backBone;
+	 @Autowired
+	 private BackBone backBone;
 	@Test
 	public void test() {
-		BackBone backBone = new BackBone();
-		backBone.setBrainService(new BrainServiceImpl());
-		backBone.setDynamicBeanService(new DynamicBeanServiceImpl());
+//		BackBone backBone = new BackBone();
+//		backBone.setBrainService(new BrainServiceImpl());
+//		backBone.setDynamicBeanService(new DynamicBeanServiceImpl());
 		Map<String, Object> map = new HashMap<String, Object>();
 		SimpleInterFaceDataInput simpleInterFaceData = backBone.buildBean("simple", map, SimpleInterFaceDataInput.class);
 //		INeuronResult<SimpleInterFaceDataOut> iNeuronResult = backBone.execute("simple", map,SimpleInterFaceDataOut.class);

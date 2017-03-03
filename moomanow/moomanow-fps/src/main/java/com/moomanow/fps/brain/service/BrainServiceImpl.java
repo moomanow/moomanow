@@ -16,9 +16,20 @@ public class BrainServiceImpl implements BrainService {
 		UUID uuid = UUID.randomUUID();
 		String brainCode = uuid.toString();
 		brainBean.setBrainCode(brainCode);
+		brainBean.setLineNeuron(neuron);
 		map.put(brainCode, brainBean);
 		return brainBean;
 	}
+	
+//	public BrainBean addBrainBean(List<Neuron<?>> neuron) {
+//		BrainBean brainBean = new BrainBean();
+//		UUID uuid = UUID.randomUUID();
+//		String brainCode = uuid.toString();
+//		brainBean.setBrainCode(brainCode);
+//		brainBean.setLineNeuron(neuron);
+//		map.put(brainCode, brainBean);
+//		return brainBean;
+//	}
 
 	public BrainBean findBrainBean(String brainCode) {
 		BrainBean brainBean = map.get(brainCode);

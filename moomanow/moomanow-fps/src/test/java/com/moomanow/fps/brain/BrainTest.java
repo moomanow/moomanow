@@ -16,6 +16,9 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
+import com.moomanow.fps.backbone.BackBone;
+import com.moomanow.fps.bean.INeuronResult;
+import com.moomanow.fps.brain.bean.BrainBean;
 import com.moomanow.fps.brain.service.BrainService;
 import com.moomanow.fps.components.Neuron;
 import com.moomanow.fps.dynamicbean.InterfaceDynamicBean;
@@ -34,22 +37,36 @@ public class BrainTest {
 	
 	@Autowired
 	private BrainService brainService;
+	
+	@Autowired
+	private BackBone backBone;
 	@Test
 	public void test(){
 		
 		List<Neuron<?>> neurons = new LinkedList<Neuron<?>>();
 		
-//		neurons.add(e)
-		brainService.createBrainBean(neurons );
-//		System.out.println("TEST");
-		DynamicBeanService dynamicBeanService = new DynamicBeanServiceImpl();
-		Map<String, Object> map = new HashMap<String, Object>();
-		InterfaceDynamicBean interfaceDynamicBean = (InterfaceDynamicBean) ProxyDynamicBean.newInstance(map , new Class[] {InterfaceDynamicBean.class },dynamicBeanService,null);
-		interfaceDynamicBean.setName("setset");
-		InterfaceOutDynamicBean interfaceOutDynamicBean = (InterfaceOutDynamicBean) ProxyDynamicBean.newInstance(map , new Class[] {InterfaceOutDynamicBean.class },dynamicBeanService,null);
+		neurons.add(new FirstNeuron());
+		neurons.add(new SecondNeuron());
+		neurons.add(new ThirdNeuron());
+		BrainBean brainBean = brainService.createBrainBean(neurons );
 		
- 		String s = interfaceOutDynamicBean.getName();
- 		Assert.assertEquals(s, "setset");
+		String brainCode = brainBean.getBrainCode();
+		System.out.println(brainCode);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		ProxyDynamicBean.newInstance(map , new Class[] {InputData.class },brainCode);
+		INeuronResult<OutData> neuronResultOutData = backBone.execute(brainCode, map, OutData.class);
+//		neuronResultOutData.
+		
+//		System.out.println("TEST");
+//		DynamicBeanService dynamicBeanService = new DynamicBeanServiceImpl();
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		InterfaceDynamicBean interfaceDynamicBean = (InterfaceDynamicBean) ProxyDynamicBean.newInstance(map , new Class[] {InterfaceDynamicBean.class },dynamicBeanService,null);
+//		interfaceDynamicBean.setName("setset");
+//		InterfaceOutDynamicBean interfaceOutDynamicBean = (InterfaceOutDynamicBean) ProxyDynamicBean.newInstance(map , new Class[] {InterfaceOutDynamicBean.class },dynamicBeanService,null);
+//		
+// 		String s = interfaceOutDynamicBean.getName();
+// 		Assert.assertEquals(s, "setset");
 	}
 
 }
