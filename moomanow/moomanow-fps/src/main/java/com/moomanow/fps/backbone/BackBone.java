@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.moomanow.core.common.exception.NonRollBackException;
+import com.moomanow.core.common.exception.RollBackException;
 import com.moomanow.fps.bean.INeuronResult;
 import com.moomanow.fps.bean.NeuronResult;
 import com.moomanow.fps.brain.bean.BrainBean;
@@ -25,13 +27,13 @@ public class BackBone {
 		this.brainService = brainService;
 	}
 
-	public <DataOut> INeuronResult<DataOut> execute(String brainCode, Map<String, Object> data,Class<DataOut> dataOutClass) {
+	public <DataOut> INeuronResult<DataOut> execute(String brainCode, Map<String, Object> data,Class<DataOut> dataOutClass) throws RollBackException, NonRollBackException {
 		think(brainCode, data);
 		DataOut dataOut = ProxyDynamicBean.newInstance(data, dataOutClass, brainCode);
 		return new NeuronResult<DataOut>(dataOut);
 	}
 	
-	private void think(String brainCode, Map<String, Object> data) {
+	private void think(String brainCode, Map<String, Object> data) throws RollBackException, NonRollBackException {
 		BrainBean brainBean  = brainService.findBrainBean(brainCode);
 		for (Neuron neuron : brainBean.getLineNeuron()) {
 			
