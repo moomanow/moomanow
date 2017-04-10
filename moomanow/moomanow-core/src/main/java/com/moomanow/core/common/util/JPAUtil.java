@@ -28,6 +28,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -161,6 +162,7 @@ public class JPAUtil {
 			Enumerated enumerated = null ;
 			Embedded embedded = null ;
 			OneToMany oneToMany = null;
+			ManyToMany manyToMany = null;
 			if(field != null){
 				 column = field.getAnnotation(Column.class);
 				 embeddedId = field.getAnnotation(EmbeddedId.class);
@@ -191,6 +193,8 @@ public class JPAUtil {
 				embedded = methodGet.getAnnotation(Embedded.class);
 			if (oneToMany == null)
 				oneToMany = methodGet.getAnnotation(OneToMany.class);
+			if (manyToMany == null)
+				manyToMany = methodGet.getAnnotation(ManyToMany.class);
 			if (column != null) {
 				// not have this column name in classMapper
 				if (!classMapper.getColumn().containsKey(column.name())) {
@@ -364,7 +368,7 @@ public class JPAUtil {
 //				property.setColumnType(ColumnType.embeddedId);
 //				classMapper.setPropertyId(property);
 			}
-			if(column==null&&joinColumn==null&&joinColumns==null&&field!=null){
+			if(column==null&&joinColumn==null&&joinColumns==null&&oneToMany==null&&manyToMany==null&&field!=null){
 				String name =field.getName();
 				if (!classMapper.getColumn().containsKey(name)) {
 					Property property = new Property();
