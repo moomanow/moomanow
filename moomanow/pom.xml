@@ -24,6 +24,7 @@
 	<modules>
 		<module>moomanow-core</module>
 		<module>moomanow-struts2-core</module>
+		<module>moomanow-struts-plugins</module>
 		<module>moomanow-process</module>
 		<module>moomanow-oauth2</module>
 		<module>moomanow-logger</module>
@@ -32,6 +33,11 @@
 		<module>moomanow-message</module>
 		<module>moomanow-authentication</module>
 		<module>moomanow-fps</module>
+		<module>moomanow-jpa</module>
+		
+		<module>moomanow-archetypes</module>
+		<module>moomanow-label</module>
+		<module>moomanow-jdbc</module>
 	</modules>
 
 	<scm>
@@ -53,6 +59,112 @@
 	<properties>
 		<java-version>1.7</java-version>
 		<org.slf4j-version>1.7.12</org.slf4j-version>
+		
+		        <archetype.mvn.plugin.version>2.4</archetype.mvn.plugin.version>
+
+        <findbugs.skip>false</findbugs.skip>
+        <findbugs.threshold>Low</findbugs.threshold>
+        <!-- the exclude file cannot be here directly, as FindBugs would interpret the path as relative to
+        each module; the default exclude filter file is at etc/config/findbugs-exclude.xml -->
+        <findbugs.exclude />
+        <findbugs.glassfish.logging.validLoggerPrefixes>
+            javax.enterprise
+        </findbugs.glassfish.logging.validLoggerPrefixes>
+        <java.version>1.8</java.version>
+        <jersey.repackaged.prefix>jersey.repackaged</jersey.repackaged.prefix>
+        <netbeans.hint.license>gf-cddl-gpl</netbeans.hint.license>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <release.tests.args>-Dmaven.test.skip=false</release.tests.args>
+        <release.preparationGoals>clean install</release.preparationGoals>
+        <skip.tests>false</skip.tests>
+        <xdk.absolute.path />
+        <surefire.security.argline />
+        <surefire.coverage.argline />
+        <failsafe.coverage.argline />
+        <server.coverage.argline>${failsafe.coverage.argline}</server.coverage.argline>
+
+
+        <!-- Dependency versions -->
+        <jersey.version>${project.version}</jersey.version>
+        <!-- asm is now source integrated - keeping this property to see the version -->
+        <!-- see core-server/src/main/java/jersey/repackaged/asm/.. -->
+        <asm.version>5.0.4</asm.version>
+        <bnd.plugin.version>2.3.6</bnd.plugin.version>
+        <cdi.api.version>1.1</cdi.api.version>
+        <commons-lang3.version>3.3.2</commons-lang3.version>
+        <checkstyle.mvn.plugin.version>2.16</checkstyle.mvn.plugin.version>
+        <checkstyle.version>6.8.1</checkstyle.version>
+        <easymock.version>3.3</easymock.version>
+        <ejb.version>3.2</ejb.version>
+        <gf.impl.version>4.0</gf.impl.version>
+        <fasterxml.classmate.version>1.3.3</fasterxml.classmate.version>
+        <findbugs.glassfish.version>1.3</findbugs.glassfish.version>
+        <findbugs.version>3.0.2</findbugs.version>
+        <freemarker.version>2.3.23</freemarker.version>
+        <gae.version>1.8.4</gae.version>
+        <gpg.mvn.plugin.version>1.6</gpg.mvn.plugin.version>
+        <grizzly.client.version>1.11</grizzly.client.version>
+        <grizzly2.version>2.3.28</grizzly2.version>
+        <guava.version>18.0</guava.version>
+        <hamcrest.version>1.3</hamcrest.version>
+        <xmlunit.version>1.6</xmlunit.version>
+        <hk2.version>2.5.0-b36</hk2.version>
+        <httpclient.version>4.5</httpclient.version> <!-- TODO: 4.5.2 doesn't work; apache client connector tests -->
+        <jackson.version>2.8.4</jackson.version>
+        <jackson1.version>1.9.13</jackson1.version>
+        <javassist.version>3.20.0-GA</javassist.version>
+        <javax.annotation.version>1.2</javax.annotation.version>
+        <javax.annotation.bundle.version>1.2</javax.annotation.bundle.version>
+        <javax.el.version>2.2.4</javax.el.version>
+        <javax.el.impl.version>2.2.4</javax.el.impl.version>
+        <javax.interceptor.version>1.2</javax.interceptor.version>
+        <javax.persistence.version>1.0</javax.persistence.version>
+        <javax.validation.api.version>1.1.0.Final</javax.validation.api.version>
+        <jaxb.api.version>2.2.7</jaxb.api.version>
+        <jaxb.ri.version>2.2.7</jaxb.ri.version>
+        <jaxrs.api.spec.version>2.1</jaxrs.api.spec.version>
+        <jaxrs.api.impl.version>2.1-m05</jaxrs.api.impl.version>
+        <jboss.logging.version>3.3.0.Final</jboss.logging.version>
+        <jersey1.version>1.19.3</jersey1.version>
+        <jersey1.last.final.version>${jersey1.version}</jersey1.last.final.version>
+        <jettison.version>1.3.7</jettison.version> <!-- TODO: 1.3.8 doesn't work; AbstractJsonTest complexBeanWithAttributes -->
+        <jetty.plugin.version>6.1.26</jetty.plugin.version>
+        <jetty.version>9.2.14.v20151106</jetty.version>
+        <jetty.servlet.api.25.version>6.1.14</jetty.servlet.api.25.version>
+        <jmh.version>1.10.2</jmh.version>
+        <jmockit.version>1.18</jmockit.version>
+        <jsonp.ri.version>1.0.4</jsonp.ri.version>
+        <jsonp.jaxrs.version>1.0</jsonp.jaxrs.version>
+        <jsp.version>2.0</jsp.version>
+        <jstl.version>1.2</jstl.version>
+        <jta.api.version>1.2</jta.api.version>
+        <kryo.version>3.0.2</kryo.version>
+        <logback.version>1.1.3</logback.version>
+        <mimepull.version>1.9.6</mimepull.version>
+        <mockito.version>1.10.19</mockito.version>
+        <moxy.version>2.6.4</moxy.version>
+        <mustache.version>0.8.17</mustache.version>
+        <netty.version>4.1.5.Final</netty.version>
+        <nexus-staging.mvn.plugin.version>1.6.7</nexus-staging.mvn.plugin.version>
+        <osgi.version>4.2.0</osgi.version>
+        <pax.exam.version>4.9.1</pax.exam.version>
+        <pax.web.version>0.7.4</pax.web.version><!-- TODO: UPGRADE! -->
+        <paxexam.mvn.plugin.version>1.2.4</paxexam.mvn.plugin.version>
+        <rxjava.version>1.2.5</rxjava.version>
+        <rxjava2.version>2.0.4</rxjava2.version>
+        <rome.version>1.0</rome.version>
+        <servlet2.version>2.4</servlet2.version>
+        <servlet3.version>3.0.1</servlet3.version>
+        <simple.version>6.0.1</simple.version>
+        <slf4j.version>1.7.12</slf4j.version>
+        <spring4.version>4.3.4.RELEASE</spring4.version>
+        <validation.api.version>1.1.0.Final</validation.api.version>
+        <validation.impl.version>5.1.3.Final</validation.impl.version> <!-- 5.3.3.Final doesn't work - osgi bv tests -->
+        <weld.version>2.2.14.Final</weld.version> <!-- 2.4.1 doesn't work - bv tests -->
+        <xerces.version>2.11.0</xerces.version>
+        <xmlunit.version>1.6</xmlunit.version>
+        <mockito.version>1.10.19</mockito.version>
 	</properties>
 	<description>ss</description>
 	<url>https://github.com/moomanow</url>
@@ -523,6 +635,28 @@
 				<groupId>com.moomanow</groupId>
 				<artifactId>moomanow-langbean</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow</groupId>
+				<artifactId>moomanow-label</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow.web.struts</groupId>
+				<artifactId>moomanow-struts-label-plugins</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow.web.struts</groupId>
+				<artifactId>moomanow-struts-plugins</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow.web.struts</groupId>
+				<artifactId>moomanow-struts-plugins-bom</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

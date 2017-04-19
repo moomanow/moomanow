@@ -221,7 +221,7 @@ public class CommonDaoImpl implements CommonDao {
 		return (Long)countQuery.getSingleResult();
 	}
     
-    public void save(Object entity) throws RollBackException {
+    public void save(Object entity)  {
 		try {
 			entityManager.persist( entity );
 			if(logger.isDebugEnabled()) {

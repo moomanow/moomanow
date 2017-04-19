@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
 	xsi:schemaLocation="
@@ -12,9 +11,32 @@
 	http://www.springframework.org/schema/aop 
 	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 	http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring
-    http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd" 
+    http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd"
 	default-autowire="byName">
 
-	<bean class="com.moomanow.core.common.dao.ConfigDaoImpl"></bean>
+	<bean class="com.moomanow.core.common.dao.MessageDaoImpl"></bean>
 	<bean class="com.moomanow.core.common.service.MessageServiceImpl"></bean>
+	<bean id="platformTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" scope="singleton">
+	  <property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<aop:config>
+		<aop:pointcut id="serviceClassPointcut"
+			expression="execution(public * com.moomanow..*Impl.*(..)) || execution(public * com.moomanow..*Impl.*(..))" />
+		<aop:aspect order="1" id="workProcessFilterAspect" ref="workProcessFilter">
+			<aop:around method="doAspect" pointcut-ref="serviceClassPointcut" />
+		</aop:aspect>
+		<aop:aspect order="2" id="logProcessFilterAspect" ref="logProcessFilter">
+			<aop:around method="doAspect" pointcut-ref="serviceClassPointcut" />
+		</aop:aspect>
+		<aop:aspect order="3" id="transactionProcessFilterAspect" ref="transactionProcessFilter">
+			<aop:around method="doAspect" pointcut-ref="serviceClassPointcut" />
+		</aop:aspect>
+	</aop:config>
+	<bean id="workProcessFilter" class="com.moomanow.core.common.processhandler.WorkProcessFilter">
+	</bean>
+	<bean id="transactionProcessFilter" class="com.moomanow.core.common.processhandler.TransactionProcessFilter">
+	</bean>
+	<bean id="logProcessFilter" class="com.moomanow.core.common.processhandler.LogProcessFilter">
+	</bean>
 </beans>
