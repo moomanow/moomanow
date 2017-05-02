@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.moomanow.web.struts</groupId>
     <artifactId>moomanow-struts-plugins</artifactId>
-    <version>0.0.10</version>
+    <version>0.1.0</version>
   </parent>
   <artifactId>moomanow-struts-plugins-bom</artifactId>
   <packaging>pom</packaging>

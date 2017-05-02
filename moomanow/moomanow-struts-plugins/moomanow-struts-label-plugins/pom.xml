@@ -4,7 +4,7 @@
     <parent>
     <artifactId>moomanow-struts-plugins</artifactId>
     <groupId>com.moomanow.web.struts</groupId>
-    <version>0.0.10</version>
+    <version>0.1.0</version>
   </parent>
 
     <artifactId>moomanow-struts-label-plugins</artifactId>
@@ -36,7 +36,7 @@
         <dependency>
         	<groupId>com.moomanow</groupId>
         	<artifactId>moomanow-label</artifactId>
-        	<version>0.0.10</version>
+        	<version>0.1.0</version>
         </dependency>
         <dependency>
         	<groupId>com.moomanow</groupId>

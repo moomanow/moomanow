@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.moomanow.archetypes</groupId>
     <artifactId>moomanow-archetypes</artifactId>
-    <version>0.0.10</version>
+    <version>0.1.0</version>
   </parent>
   <artifactId>moomanow-quickstart-webapp</artifactId>
   <packaging>maven-archetype</packaging>

@@ -3,14 +3,14 @@
   <parent>
     <groupId>com.moomanow</groupId>
     <artifactId>moomanow</artifactId>
-    <version>0.0.10</version>
+    <version>0.1.0</version>
   </parent>
   <artifactId>moomanow-label</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>com.moomanow</groupId>
   		<artifactId>moomanow-jdbc</artifactId>
-  		<version>0.0.10</version>
+  		<version>0.1.0</version>
   	</dependency>
   </dependencies>
   
