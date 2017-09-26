@@ -15,6 +15,10 @@
     http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd" 
 	default-autowire="byName">
 
-	<bean class="com.moomanow.core.common.dao.ConfigDaoImpl"></bean>
+	<bean class="com.moomanow.core.common.dao.MessageDaoImpl"></bean>
 	<bean class="com.moomanow.core.common.service.MessageServiceImpl"></bean>
+	<bean class="com.moomanow.fps.brain.service.BrainServiceImpl"></bean>
+	<bean class="com.moomanow.fps.brain.dao.BrainDaoImpl"></bean>
+	<bean class="com.moomanow.fps.backbone.BackBone"/>
+	<bean class="com.moomanow.fps.dynamicbean.service.DynamicBeanServiceImpl"/>
 </beans>

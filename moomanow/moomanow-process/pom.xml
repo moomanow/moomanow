@@ -61,6 +61,10 @@
 			<artifactId>hsqldb</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.moomanow</groupId>
+			<artifactId>moomanow-jdbc</artifactId>
+		</dependency>
 	</dependencies>
 	
 	  <build>

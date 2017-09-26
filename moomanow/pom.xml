@@ -658,6 +658,16 @@
 				<version>${project.version}</version>
 				<type>pom</type>
 			</dependency>
+			<dependency>
+				<groupId>com.moomanow</groupId>
+				<artifactId>moomanow-jdbc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.moomanow</groupId>
+				<artifactId>moomanow-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

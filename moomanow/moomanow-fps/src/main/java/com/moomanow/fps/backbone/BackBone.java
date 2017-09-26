@@ -39,7 +39,7 @@ public class BackBone {
 			
 			if(neuron instanceof SwitchNeuron){
 				SwitchNeuron switchNeuron = (SwitchNeuron) neuron;
-				ISwitch input = ProxyDynamicBean.newInstance(data, (Class) ISwitch.class, brainCode);
+				ISwitch input = ProxyDynamicBean.newInstance(data, ISwitch.class, brainCode);
 				switchNeuron.execute(input);
 				String nextCode = input.nextCode();
 				if(nextCode!=null){
