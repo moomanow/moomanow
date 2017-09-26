@@ -28,7 +28,7 @@ import com.moomanow.fps.dynamicbean.proxy.ProxyDynamicBean;
 @ContextConfiguration(locations = {
       "classpath:spring.xml",
       "classpath:prj-brain.xml"})
-public class BrainTest {
+public class BrainTestLive {
 	
 	@Autowired
 	private BrainService brainService;

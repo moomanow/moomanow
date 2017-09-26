@@ -2,7 +2,6 @@ package com.moomanow.fps.backbone;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import com.moomanow.fps.components.ISwitch;
 import com.moomanow.fps.components.Neuron;
 import com.moomanow.fps.components.SwitchNeuron;
 import com.moomanow.fps.dynamicbean.proxy.ProxyDynamicBean;
-import com.moomanow.fps.dynamicbean.service.DynamicBeanService;
 
 public class BackBone {
 
@@ -39,7 +37,7 @@ public class BackBone {
 			
 			if(neuron instanceof SwitchNeuron){
 				SwitchNeuron switchNeuron = (SwitchNeuron) neuron;
-				ISwitch input = ProxyDynamicBean.newInstance(data, (Class) ISwitch.class, brainCode);
+				ISwitch input = ProxyDynamicBean.newInstance(data, ISwitch.class, brainCode);
 				switchNeuron.execute(input);
 				String nextCode = input.nextCode();
 				if(nextCode!=null){

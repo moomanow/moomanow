@@ -21,7 +21,7 @@ import com.moomanow.fps.backbone.BackBone;
 @ContextConfiguration(locations = {
         "classpath:spring.xml",
         "classpath:prj-simpleProcess.xml"})
-public class SimpleTest {
+public class SimpleTestLive {
 
 	 @Autowired
 	 private BackBone backBone;

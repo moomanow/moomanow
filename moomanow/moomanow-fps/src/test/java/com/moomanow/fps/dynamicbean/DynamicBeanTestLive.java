@@ -24,7 +24,7 @@ import com.moomanow.fps.dynamicbean.service.DynamicBeanServiceImpl;
 @ContextConfiguration(locations = {
         "classpath:spring.xml",
         "classpath:prj-simpleProcess.xml"})
-public class DynamicBeanTest {
+public class DynamicBeanTestLive {
 
 	@Test
 	public void test(){

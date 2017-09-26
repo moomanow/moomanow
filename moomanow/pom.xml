@@ -593,6 +593,71 @@
 				</pluginManagement>
 			</build>
 		</profile>
+<!-- 		<profile> -->
+			<!-- Turn off strict javadoc when building on 1.8 -->
+<!-- 			<activation> -->
+<!-- 				<jdk>1.8</jdk> -->
+<!-- 			</activation> -->
+<!-- 			<build> -->
+<!-- 				<pluginManagement> -->
+<!-- 					<plugins> -->
+<!-- 						<plugin> -->
+<!-- 							<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 							<artifactId>maven-javadoc-plugin</artifactId> -->
+<!-- 							<version>2.9</version> -->
+<!-- 							<configuration> -->
+<!-- 								<javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable> -->
+<!-- 								<additionalparam>-Xdoclint:none</additionalparam> -->
+<!-- 							</configuration> -->
+<!-- 						</plugin> -->
+<!-- 					</plugins> -->
+<!-- 				</pluginManagement> -->
+<!-- 			</build> -->
+<!-- 		</profile> -->
+		
+		<profile>
+			<id>release</id>
+			<activation>
+				<property>
+					<name>release</name>
+				</property>
+			</activation>
+			<build>
+				<defaultGoal>deploy</defaultGoal>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5.3</version>
+						<configuration>
+							<autoVersionSubmodules>true</autoVersionSubmodules>
+							<useReleaseProfile>false</useReleaseProfile>
+							<releaseProfiles>release</releaseProfiles>
+							<goals>
+								<goal>clean</goal>
+								<goal>deploy</goal>
+							</goals>
+							<preparationGoals>clean deploy</preparationGoals>
+							<arguments> -Dmaven.javadoc.skip=true </arguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 <distributionManagement>
