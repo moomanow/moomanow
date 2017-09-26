@@ -4,7 +4,7 @@
     <groupId>com.moomanow</groupId>
     <artifactId>moomanow</artifactId>
     <relativePath>..</relativePath>
-    <version>0.0.10</version>
+    <version>0.0.11-SNAPSHOT</version>
   </parent>
   <artifactId>moomanow-core</artifactId>
   <dependencies>

@@ -1,5 +1,7 @@
 package com.moomanow.core.common.bean;
 
+import java.util.Set;
+
 public interface UserBean {
 	public String getUserId();
 //	public void setUserId(String userId);
@@ -19,5 +21,6 @@ public interface UserBean {
 	public String getName();
 	
 	public String getStatus();
+	public Set<String> getPrivileges();
 //	public void setStatus(String status);
 }

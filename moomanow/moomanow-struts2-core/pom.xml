@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.moomanow</groupId>
     <artifactId>moomanow</artifactId>
-    <version>0.0.10</version>
+    <version>0.0.11-SNAPSHOT</version>
   </parent>
   <artifactId>moomanow-struts2-core</artifactId>
   <dependencies>
@@ -79,7 +79,7 @@
     		<dependency>
     			<groupId>org.apache.struts</groupId>
     			<artifactId>struts2-bom</artifactId>
-    			<version>2.5.2</version>
+    			<version>2.5.13</version>
     			<type>pom</type>
     			<scope>import</scope>
     		</dependency>
